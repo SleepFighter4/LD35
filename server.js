@@ -9,9 +9,10 @@ var path = require('path');
 var game = require('./game.js');
 
 // Globals
-var sitePrefix = fs.realpathSync('.') + path.sep + 'public';
+var publicContentFolder = path.sep + 'public';
+var sitePrefix = fs.realpathSync('.') + publicContentFolder;
 var OK = 200, Redirect = 307, NotFound = 404, BadType = 415, Error = 500;
-var port = 6000;
+var port = 4000;
 
 http.listen(port, function() {
 	log('listening on *:' + port.toString());
@@ -24,8 +25,8 @@ app.get('/', function(req, res) {
 
 app.get(/^(.+)$/, function(req, res) {
 	var filename = url.parse(req.url).pathname;
-	if (!inSite(sitePrefix+filename)) return fail(res, NotFound);
-	res.sendFile(sitePrefix+filename, {root:'.'});
+	if (!inSite(sitePrefix + filename)) return fail(res, NotFound);
+	res.sendFile(publicContentFolder + filename, {root:'.'});
 });
 
 function fail(response, code) {
@@ -40,14 +41,14 @@ function startsWith(s,prefix) {
 function inSite(file) {
 	var real;
 	try {
-	real = fs.realpathSync(file);
+		real = fs.realpathSync(file);
 	}
 	catch (err) {
-	log("WARNING: Trying to access a file not in the site: "+file);
-	log(err.message);
-	return false;
+		log("WARNING: Trying to access a file not in the site: "+file);
+		log(err.message);
+		return false;
 	}
-	return startsWith(real,site);
+	return startsWith(real, sitePrefix);
 }
 
 function log(obj) {
