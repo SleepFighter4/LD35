@@ -7,7 +7,7 @@ var objects = [];
 var scores = [];
 var canvas = document.getElementById('game-canvas');
 var ctx = canvas.getContext("2d");
-var canvasSize = {x: canvas.x, y: canvas.y}
+var canvasSize = {"width":canvas.width,"height":canvas.height};
 var keyState = {};
 var socket;
 
@@ -74,7 +74,10 @@ function updateCanvas() {
 }
 
 function updateCanvasSize() {
-  canvasSize = {x:canvas.width,y:canvas.height};
+  canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth;
+  canvasSize.height = canvas.height;
+  canvasSize.width = canvas.width;
   socket.emit('canvas size',canvasSize);
 }
 
