@@ -14,7 +14,7 @@ function drawbuilding(color,pos_x,pos_y, width, height)
 
 function drawcar(x,y)
 {
-	var canvas = $("#car-canvas")[0];
+	var canvas = document.getElementById('car-canvas');
 	var ctx = canvas.getContext("2d");
 
 	//BODY
@@ -39,12 +39,12 @@ function drawcar(x,y)
 
 function drawbackground(buildingarray, rotation)
 {
-	var canvas = $("#building-canvas")[0];
+	var canvas = document.getElementById('building-canvas');
 	var ctx = canvas.getContext("2d");
 
 	for(i = 0; i < buildingarray.length; i++)
 	{
-		drawbuilding(
+		drawbuilding();
 	}
 	ctx.rotate(rotation);
 }
