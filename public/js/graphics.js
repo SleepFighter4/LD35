@@ -51,10 +51,6 @@ function initbackground()
 
 function getCarLocalCoords(player, canvas, x, y)
 {
-  console.log("player.x = " + player.x +
-              " player.y = " + player.y +
-              " x = " + x +
-              " y = " + y);
   // Return coordinates for the user's canvas based when
   // given global coordinates.
   return {
