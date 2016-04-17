@@ -23,3 +23,13 @@ function pathToBoxes(path) {
 
   return boxes;
 }
+
+
+/*
+ * Get the <script> node calling this function
+ * Source: http://stackoverflow.com/a/3326554/239714
+ */
+function currentScriptTag(){
+  var scripts = document.getElementsByTagName('script');
+  return scripts[scripts.length - 1];
+}
