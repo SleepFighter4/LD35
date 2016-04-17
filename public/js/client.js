@@ -21,6 +21,7 @@ var KEY_CODES = {
   SPACE: 32
 }
 var RADIANS_PER_DEG = Math.PI/180; 
+var PIXEL_PER_METER = 10;
 
 // Event listeners
 window.addEventListener('keydown',function(e){
@@ -47,6 +48,7 @@ window.addEventListener("blur", function(){
 registerSocketHooks();
 updateCanvasSize(); 
 updateCanvas();
+initUI();
 
 function registerSocketHooks() {
   socket = io();
@@ -70,7 +72,7 @@ function updateCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawObjects(objects, players, player, canvas, ctx);
     drawPlayer(player, canvas, ctx);
-    drawUI();
+    updateUI();
   }
 }
 
@@ -114,12 +116,15 @@ function getLocalCoords(x, y) {
   }
 }*/
 
-function drawUI() {
-  if (typeof(player) != player.ping) {
-    //Display ping.
-    ctx.fillStyle="#fff";
-    ctx.font="12px Arial";
-    var pingText = "Ping: " + player.ping;
-    ctx.fillText(pingText, 38, 30);
-  }
+function initUI() {
+  ui.ping = document.getElementById('ui-ping');
+  ui.speed = document.getElementById('ui-speed');
+}
+
+function updateUI() {
+  if (typeof(player) === 'undefined')
+    return;
+
+  ui.ping.value = player.ping;
+  ui.speed.value = Math.floor(Math.sqrt(player.vX * player.vY) / PIXEL_PER_METER * 10)/10;
 }

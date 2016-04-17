@@ -8,4 +8,28 @@ html, body {
 #game-canvas {
   display: block;
   background-color: #1B0AAD;
+  z-index: 1;
+}
+
+#ui {
+  z-index: 2;
+  position: fixed;
+  top: 2em;
+  left: 2em;
+  color: black;
+  padding: .5em;
+  background-color: rgba(255,255,255, .75);
+  box-shadow: 0 0 10px rgba(255,255,255, .75);
+}
+
+#ui output {
+  display: block;
+}
+
+[data-prefix]::before {
+  content: attr(data-prefix) " ";
+}
+
+[data-suffix]::after {
+  content: " " attr(data-suffix);
 }
