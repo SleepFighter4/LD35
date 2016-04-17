@@ -102,15 +102,15 @@ function movePlayers() {
     var forwardAcc = 0;
 
     if (p.keyState[KEY_CODES.LEFT]) {
-      rotationDirection = -1;
+      rotationDirection = -2;
     } else if (p.keyState[KEY_CODES.RIGHT]) {
-      rotationDirection = 1;
+      rotationDirection = 2;
     }
 
     if (p.keyState[KEY_CODES.UP]) {
-      forwardAcc = 100;
+      forwardAcc = 200;
     } else if (p.keyState[KEY_CODES.DOWN]) {
-      forwardAcc = -100;
+      forwardAcc = -200;
     }
 
     if (p.keyState[KEY_CODES.A]) {
@@ -123,14 +123,21 @@ function movePlayers() {
     p.w = Math.min(Math.max(p.w, 20), 130);
     p.h = Math.min(Math.max(p.h, 20), 130);
 
+    //Phil's terrible drift stuff
+    var drift;
+    var velocity = Math.sqrt(p.vX*p.vY);
+    if(velocity < 200) drift = 1;
+    else if(velocity > 500) drift = 0.2;
+    else drift = 0.5;
+
     p.angle = (p.angle + rotationDirection * p.rotationSpeed * delta) % 360;
     if (p.angle < 0) p.angle += 360;
     var engineAccelerationX = forwardAcc * Math.cos(RADIANS_PER_DEG * p.angle);
     var engineAccelerationY = forwardAcc * Math.sin(RADIANS_PER_DEG * p.angle);
     p.vX += engineAccelerationX * delta;
     p.vY += engineAccelerationY * delta;
-    p.vX *= (1 - (0.8 * delta)) // Dampening
-    p.vY *= (1 - (0.8 * delta)) // Dampening
+    p.vX *= (1 - (drift * delta)) // Dampening
+    p.vY *= (1 - (drift * delta)) // Dampening
     if (Math.abs(p.vY) < 0.1) p.vY = 0;
     if (Math.abs(p.vX) < 0.1) p.vX = 0;
     p.x += p.vX * delta;
