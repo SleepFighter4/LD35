@@ -23,6 +23,10 @@ app.get('/', function(req, res) {
   res.sendFile('public/index.html', {root:'.'});
 });
 
+app.get('/favicon.ico', function(req, res) {
+  res.sendFile('public/images/favicon.ico', {root:'.'});
+});
+
 app.get(/^(.+)$/, function(req, res) {
   var filename = url.parse(req.url).pathname;
   if (!inSite(sitePrefix + filename)) return fail(res, NotFound);

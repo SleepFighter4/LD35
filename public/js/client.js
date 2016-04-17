@@ -7,7 +7,7 @@ var objects = [];
 var scores = [];
 var canvas = document.getElementById('game-canvas');
 var ctx = canvas.getContext("2d");
-var canvasSize = {"width":canvas.width,"height":canvas.height};
+var canvasSize = {"x":canvas.width,"y":canvas.height};
 var keyState = {};
 var socket;
 
@@ -20,19 +20,19 @@ var KEY_CODES = {
   DOWN: 40,
   SPACE: 32
 }
-var TO_RADIANS = Math.PI/180; 
+var RADIANS_PER_DEG = Math.PI/180; 
 
 // Event listeners
 window.addEventListener('keydown',function(e){
   if (usedKeys.indexOf(e.which) != -1 && !keyState[e.which]) {
     keyState[e.which] = true;
-    socket.emit('keyupdate', keyState);
+    socket.emit('key update', keyState);
   }
 },true);
 window.addEventListener('keyup',function(e){
   if (usedKeys.indexOf(e.which) != -1 && keyState[e.which]) {
     keyState[e.which] = false;
-    socket.emit('keyupdate', keyState);
+    socket.emit('key update', keyState);
   }
 },true);
 window.addEventListener("resize", function(){
@@ -40,6 +40,7 @@ window.addEventListener("resize", function(){
 },true);
 window.addEventListener("blur", function(){
   keyState = {}
+  socket.emit('key update', keyState);
 });
 
 // Start program
@@ -57,7 +58,7 @@ function registerSocketHooks() {
     objects = obj.objects;
     scores = obj.scores;
   })
-  socket.on('ping', function(p){
+  socket.on('ping', function(p) {
     socket.emit('ping response', p);
   });
 }
@@ -76,32 +77,39 @@ function updateCanvas() {
 function updateCanvasSize() {
   canvas.height = window.innerHeight;
   canvas.width = window.innerWidth;
-  canvasSize.height = canvas.height;
-  canvasSize.width = canvas.width;
-  socket.emit('canvas size',canvasSize);
+  canvasSize.x = canvas.height;
+  canvasSize.y = canvas.width;
+  socket.emit('canvas size', canvasSize);
 }
 
 function getLocalCoords(x, y) {
   // Convert global coords to coords relative to the top left of the user's canvas.
   return {
-    x:canvas.width/2 - (player.x-x),
-    y:canvas.height/2 - (player.y-y)
+    "x": canvas.width/2 - (player.x-x),
+    "y": canvas.height/2 - (player.y-y)
   };
 }
 
 function drawObjects() {
   for (var i = 0; i < objects.length; i++) {
-    // Draw
+    var coords = getLocalCoords(objects[i].x, objects[i].y);
+    ctx.fillStyle = "#00FF00";
+    ctx.fillRect(coords.x, coords.y, 50, 50);
   }
 }
 
 function drawPlayers() {
   if (typeof(players) != 'undefined' && typeof(player) != 'undefined') {
     for (var i = 0; i < players.length; i++) {
-      // Draw player
-      var coords = getLocalCoords(players[i].x, players[i].y);
+      var p = players[i];
+      var coords = getLocalCoords(p.x, p.y);
+      ctx.save();
+      ctx.translate(coords.x, coords.y);
+      ctx.rotate(p.angle * RADIANS_PER_DEG);
       ctx.fillStyle = "#FF0000";
-      ctx.fillRect(coords.x, coords.y, 50, 100);
+      ctx.fillRect(coords.x - p.w / 2, coords.y - p.h / 2, p.w, p.h);
+      ctx.rect(coords.x - p.w / 2, coords.y - p.h / 2, p.w, p.h);
+      ctx.restore();
     }
   }
 }
