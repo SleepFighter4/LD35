@@ -221,7 +221,7 @@ function checkForCollosions(p, objects) {
     ];
   }
 
-  pLines = [
+  var pLines = [
     [pCorners[0], pCorners[1]],
     [pCorners[1], pCorners[2]],
     [pCorners[2], pCorners[3]],
@@ -246,7 +246,7 @@ function checkForCollosions(p, objects) {
       ];
     }
     
-    oLines = [
+    var oLines = [
       [oCorners[0],oCorners[1]],
       [oCorners[1],oCorners[2]],
       [oCorners[2],oCorners[3]],
@@ -322,7 +322,7 @@ function sendUpdates() {
     objsToSend['scores'] = scores;
   
     // Check for collisions between player and local objects.
-    checkForCollosions(p, objsToSend.objects);
+    //checkForCollosions(p, objsToSend.objects);
 
     // Get socket of player.
     var socket = io.sockets.connected[p.id];
