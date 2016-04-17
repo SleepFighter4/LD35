@@ -16,5 +16,7 @@ function Player(id) {
   this.yGrid = null;
   this.lastXGrid = null;
   this.lastYGrid = null;
+  this.ping = 0;
+  this.pingStart = Date.now();
 }
 exports.Player = Player;

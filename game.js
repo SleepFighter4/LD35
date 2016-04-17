@@ -62,6 +62,7 @@ function initialiseClient(socket) {
   players.push(player);
   if (players.length == 1) log('A user connected. There is now 1 user.');
   else log('A user connected. There are now ' + (players.length).toString() + ' users.');
+  socket.emit('ping','');
 
   socket.on('key update', function(keyState) {
     if (typeof(player) != 'undefined') {
@@ -72,6 +73,12 @@ function initialiseClient(socket) {
   socket.on('canvas size', function(cs) {
     player.canvasSize.x = (cs.x && cs.x > 0 && cs.x < 4000) ? cs.x : 1980;
     player.canvasSize.y = (cs.y && cs.y > 0 && cs.y < 2000) ? cs.y : 1080;
+  });
+  socket.on('ping response', function(data) {
+    if (typeof(player) != 'undefined') {
+      player.ping = Date.now() - player.pingStart;
+      setTimeout(function(){socket.emit('ping',''); player.pingStart = Date.now();},2000);
+    }
   });
   socket.on('disconnect', function() {
     if (typeof(player) != 'undefined') {
