@@ -119,6 +119,15 @@ function getLocalCoords(x, y) {
 function initUI() {
   ui.ping = document.getElementById('ui-ping');
   ui.speed = document.getElementById('ui-speed');
+  ui.fps = document.getElementById('ui-fps');
+
+  (function updateFPS(lastTime) {
+    var currentTime = +(new Date).getTime();
+    var timeSpent = currentTime - lastTime;
+    setTimeout(updateFPS, 1000, currentTime);
+    ui.fps.value = ui.frameCount || 0;
+    ui.frameCount = 0;
+  })();
 }
 
 function updateUI() {
@@ -129,4 +138,6 @@ function updateUI() {
 
   ui.ping.value = player.ping || -1;
   ui.speed.value = Math.floor(speed * 10)/10;
+
+  ui.frameCount++;
 }
