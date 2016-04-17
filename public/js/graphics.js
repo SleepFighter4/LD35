@@ -95,19 +95,20 @@ function drawObjects(objects, opponents, player, canvas, ctx)
   for(i = 0; i < opponents.length; i++)
   {
     var coords = getCarLocalCoords(player, canvas, opponents[i].x, opponents[i].y);
-    drawCar(ctx,
+    if(opponents[i].id != player.id)
+    {
+      drawCar(ctx,
             coords.x,
             coords.y,
             opponents[i].w,
             opponents[i].h,
             opponents[i].angle);
 
-    var playerText = "Players: " + opponents[i].x + " x " + opponents[i].y;
-    ctx.fillText(playerText, 38, 200 + i*10);
-    var playerText = "Players: " + coords.x + " x " + coords.y;
-    ctx.fillText(playerText, 38, 300 + i*10);
-
-
+      var playerText = "Players: " + opponents[i].x + " x " + opponents[i].y;
+      ctx.fillText(playerText, 38, 200 + i*10);
+      var playerText = "Players: " + coords.x + " x " + coords.y;
+      ctx.fillText(playerText, 38, 300 + i*10);
+    }
   }
   ctx.restore();
 }
