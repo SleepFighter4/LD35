@@ -16,24 +16,32 @@ function drawBuilding(ctx, pos_x, pos_y, width, height)
 
 function drawCar(ctx, x, y, width, height, rotation)
 {
+  x -= width/2;
+  y -= height/2;
+
+  function tx(a){return x+a*width;}
+  function ty(a){return y+a*height;}
+  function bx(a){return a*width;}
+  function by(a){return a*height;}
+
   //BODY
   ctx.fillStyle = CAR_BODY_COLOR;
-  ctx.fillRect(x,y,50,100);
+  ctx.fillRect(x,y,width,height);
   //BONNET
   ctx.fillStyle = CAR_PANEL_COLOR;
-  ctx.fillRect(x,y,50,20);
+  ctx.fillRect(tx(0),ty(0),bx(1),by(0.20));
   //WINDSHIELD
   ctx.fillStyle = CAR_GLASS_COLOR;
-  ctx.fillRect(x+5,y+25,40,15);
+  ctx.fillRect(tx(0.05),ty(0.25),bx(0.9),by(0.15));
   //ROOF
   ctx.fillStyle = CAR_PANEL_COLOR;
-  ctx.fillRect(x+5,y+45,40,15);
+  ctx.fillRect(tx(0.05),ty(0.45),bx(0.90),by(0.15));
   //BACKWINDSHIELD
   ctx.fillStyle = CAR_GLASS_COLOR;
-  ctx.fillRect(x+5,y+65,40,15);
+  ctx.fillRect(tx(0.05),ty(0.65),bx(0.90),by(0.15));
   //BOOT
   ctx.fillStyle = CAR_PANEL_COLOR;
-  ctx.fillRect(x+0,y+85,50,20);
+  ctx.fillRect(tx(0),ty(0.85),bx(1),by(0.20));
 }
 
 function initbackground()
