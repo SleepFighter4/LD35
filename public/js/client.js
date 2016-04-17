@@ -21,7 +21,7 @@ var KEY_CODES = {
   SPACE: 32
 }
 var RADIANS_PER_DEG = Math.PI/180; 
-var PIXEL_PER_METER = 10;
+var PIXEL_PER_METER = 1;
 
 // Event listeners
 window.addEventListener('keydown',function(e){
