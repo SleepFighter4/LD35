@@ -125,6 +125,8 @@ function updateUI() {
   if (typeof(player) === 'undefined')
     return;
 
+  var speed = Math.sqrt(Math.pow(player.vX, 2) + Math.pow(player.vY, 2)) / PIXEL_PER_METER;
+
   ui.ping.value = player.ping || -1;
-  ui.speed.value = Math.floor(Math.sqrt(player.vX * player.vY) / PIXEL_PER_METER * 10)/10 || -1;
+  ui.speed.value = Math.floor(speed * 10)/10 || -1;
 }
