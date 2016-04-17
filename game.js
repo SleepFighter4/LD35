@@ -119,6 +119,8 @@ function movePlayers() {
     //p.vY *= (1 - (0.4 * delta)) // Dampening
     p.vX = forwardAcc * Math.cos(RADIANS_PER_DEG * p.angle);
     p.vY = forwardAcc * Math.sin(RADIANS_PER_DEG * p.angle);
+    if (p.vY < 0.1) p.vY = 0;
+    if (p.vX < 0.1) p.vX = 0;
     p.x += p.vX * delta;
     p.y += p.vY * delta;
     p.lastMovedTime = Date.now();
