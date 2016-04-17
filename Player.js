@@ -2,8 +2,8 @@ function Player(id) {
   this.id = id;
   this.x = 0.0;
   this.y = 0.0;
-  this.w = 100;
-  this.h = 150;
+  this.w = 60;
+  this.h = 90;
   this.vX = 0.0;
   this.vY = 0.0;
   this.angle = 90.0;

@@ -12,13 +12,15 @@ var keyState = {};
 var socket;
 
 //Utilities
-var usedKeys = [37, 38, 39, 40, 32];
+var usedKeys = [37, 38, 39, 40, 32, 65, 83];
 var KEY_CODES = {
   LEFT: 37,
   UP: 38,
   RIGHT: 39,
   DOWN: 40,
-  SPACE: 32
+  SPACE: 32,
+  A: 65,
+  S: 83
 }
 var RADIANS_PER_DEG = Math.PI/180; 
 var PIXEL_PER_METER = 1;

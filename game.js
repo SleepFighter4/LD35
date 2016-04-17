@@ -25,7 +25,9 @@ var KEY_CODES = {
   UP: 38,
   RIGHT: 39,
   DOWN: 40,
-  SPACE: 32
+  SPACE: 32,
+  A: 65,
+  S: 83
 };
 var RADIANS_PER_DEG = Math.PI/180;
 var vMax = 200; // px / sec
@@ -110,6 +112,16 @@ function movePlayers() {
     } else if (p.keyState[KEY_CODES.DOWN]) {
       forwardAcc = -100;
     }
+
+    if (p.keyState[KEY_CODES.A]) {
+      p.w += delta * 100;
+      p.h -= delta * 100;
+    } else if (p.keyState[KEY_CODES.S]) {
+      p.w -= delta * 100;
+      p.h += delta * 100;
+    }
+    p.w = Math.min(Math.max(p.w, 20), 130);
+    p.h = Math.min(Math.max(p.h, 20), 130);
 
     p.angle = (p.angle + rotationDirection * p.rotationSpeed * delta) % 360;
     if (p.angle < 0) p.angle += 360;
