@@ -106,23 +106,21 @@ function movePlayers() {
     }
 
     if (p.keyState[KEY_CODES.UP]) {
-      forwardAcc = 20;
+      forwardAcc = 100;
     } else if (p.keyState[KEY_CODES.DOWN]) {
-      forwardAcc = -20;
+      forwardAcc = -100;
     }
 
     p.angle = (p.angle + rotationDirection * p.rotationSpeed * delta) % 360;
     if (p.angle < 0) p.angle += 360;
-    //var engineAccelerationX = forwardAcc * Math.cos(RADIANS_PER_DEG * p.angle);
-    //var engineAccelerationY = forwardAcc * Math.sin(RADIANS_PER_DEG * p.angle);
-    //p.vX += engineAccelerationX * delta;
-    //p.vY += engineAccelerationY * delta;
-    //p.vX *= (1 - (0.4 * delta)) // Dampening
-    //p.vY *= (1 - (0.4 * delta)) // Dampening
-    p.vX = forwardAcc * Math.cos(RADIANS_PER_DEG * p.angle);
-    p.vY = forwardAcc * Math.sin(RADIANS_PER_DEG * p.angle);
-    if (p.vY < 0.1) p.vY = 0;
-    if (p.vX < 0.1) p.vX = 0;
+    var engineAccelerationX = forwardAcc * Math.cos(RADIANS_PER_DEG * p.angle);
+    var engineAccelerationY = forwardAcc * Math.sin(RADIANS_PER_DEG * p.angle);
+    p.vX += engineAccelerationX * delta;
+    p.vY += engineAccelerationY * delta;
+    p.vX *= (1 - (0.8 * delta)) // Dampening
+    p.vY *= (1 - (0.8 * delta)) // Dampening
+    if (Math.abs(p.vY) < 0.1) p.vY = 0;
+    if (Math.abs(p.vX) < 0.1) p.vX = 0;
     p.x += p.vX * delta;
     p.y += p.vY * delta;
     p.lastMovedTime = Date.now();
@@ -318,8 +316,14 @@ function sendUpdates() {
   for (var i = 0; i < players.length; i++) {
     var p = players[i];
 
-    var objsToSend = getObjectsForPlayer(p, playerIndexGrid, objectIndexGrid);
-    objsToSend['scores'] = scores;
+    //var objsToSend = getObjectsForPlayer(p, playerIndexGrid, objectIndexGrid);
+    //objsToSend['scores'] = scores;
+
+    var objsToSend = {
+      "players": players,
+      "objects": objects,
+      "scores": scores
+    }
   
     // Check for collisions between player and local objects.
     //checkForCollosions(p, objsToSend.objects);
