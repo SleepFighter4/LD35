@@ -128,5 +128,5 @@ function updateUI() {
   var speed = Math.sqrt(Math.pow(player.vX, 2) + Math.pow(player.vY, 2)) / PIXEL_PER_METER;
 
   ui.ping.value = player.ping || -1;
-  ui.speed.value = Math.floor(speed * 10)/10 || -1;
+  ui.speed.value = Math.floor(speed * 10)/10;
 }
