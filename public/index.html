@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
-    <script> io || (currentScriptTag().src = 'js/socket.io-1.4.5.js') </script>
+    <script id="socketio" src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script>
+setTimeout(function() {
+  if (typeof(io) === 'undefined') {
+    document.getElementById('socketio').src = 'js/socket.io-1.4.5.js';
+  }
+}, 1000);
+    </script>
     <link rel="stylesheet" href="css/style.css" type="text/css"/>
   </head>
   <body>
