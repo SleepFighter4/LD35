@@ -111,14 +111,14 @@ function movePlayers() {
 
     p.angle = (p.angle + rotationDirection * p.rotationSpeed * delta) % 360;
     if (p.angle < 0) p.angle += 360;
-    var engineAccelerationX = forwardAcc * Math.cos(RADIANS_PER_DEG * p.angle);
-    var engineAccelerationY = forwardAcc * Math.sin(RADIANS_PER_DEG * p.angle);
-
-    p.vX += engineAccelerationX * delta;
-    p.vY += engineAccelerationY * delta;
-    p.vX *= (1 - (0.4 * delta)) // Dampening
-    p.vY *= (1 - (0.4 * delta)) // Dampening
-
+    //var engineAccelerationX = forwardAcc * Math.cos(RADIANS_PER_DEG * p.angle);
+    //var engineAccelerationY = forwardAcc * Math.sin(RADIANS_PER_DEG * p.angle);
+    //p.vX += engineAccelerationX * delta;
+    //p.vY += engineAccelerationY * delta;
+    //p.vX *= (1 - (0.4 * delta)) // Dampening
+    //p.vY *= (1 - (0.4 * delta)) // Dampening
+    p.vX = forwardAcc * Math.cos(RADIANS_PER_DEG * p.angle);
+    p.vY = forwardAcc * Math.sin(RADIANS_PER_DEG * p.angle);
     p.x += p.vX * delta;
     p.y += p.vY * delta;
     p.lastMovedTime = Date.now();
