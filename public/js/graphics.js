@@ -7,15 +7,14 @@ var CAR_GLASS_COLOR="#6699ff"
 
 var backgroundcanvas;
 
-function drawbuilding(ctx, pos_x, pos_y, width, height)
+function drawBuilding(ctx, pos_x, pos_y, width, height)
 {
-  console.log("OH HEY");
   //BODY
   ctx.fillStyle = "#101010";
   ctx.fillRect(pos_x, pos_y, width, height);
 }
 
-function drawcar(ctx, x, y, width, height, rotation)
+function drawCar(ctx, x, y, width, height, rotation)
 {
   //BODY
   ctx.fillStyle = CAR_BODY_COLOR;
@@ -42,55 +41,66 @@ function initbackground()
   backgroundcanvas = document.createElement("canvas");
 }
 
-function getLocalCoords(player, canvas, x, y)
+function getCarLocalCoords(player, canvas, x, y)
 {
-// Return coordinates for the user's canvas based when
-// given global coordinates.
+  console.log("player.x = " + player.x +
+              " player.y = " + player.y +
+              " x = " + x +
+              " y = " + y);
+  // Return coordinates for the user's canvas based when
+  // given global coordinates.
   return {
-           x:canvas.width/2 - (player.x-x),
-           y:canvas.height/2 - (player.y-y)
+           x:(player.x-x),
+           y:(player.y-y)
          };
-}
+ }
 
 function drawPlayer(player, canvas, ctx)
 {
   var x=canvas.width/2;
   var y=canvas.height/2;
-  drawcar(ctx, x, y, player.w, player.h, 0);
+  drawCar(ctx, x, y, player.w, player.h, 0);
+  var playerText = "Player: " + player.x + " x " + player.y;
+  ctx.fillText(playerText, 38, 40);
 }
 
 function drawObjects(objects, opponents, player, canvas, ctx)
 {
+  var i, x, y;
+
   ctx.save();
   ctx.translate(canvas.width/2, canvas.height/2);
   ctx.rotate(player.angle*Math.PI/180);
-  var i, x, y;
 
   for(i = 0; i < objects.length; i++)
   {
-    x = objects[i].x;
-    y = objects[i].y;
-    getLocalCoords(player, canvas, x, y);
-    drawbuilding(ctx,
-                 x,
-                 y,
-                 objects[i].w,
-                 objects[i].h);
+    var coords = getCarLocalCoords(player, canvas, objects[i].x, objects[i].y);
+    drawBuilding(ctx,
+                 coords.x,
+                 coords.y,
+                 50,//objects[i].w,
+                 50);//objects[i].h);
+    var buildingText = "Buildings: " + coords.x + " x " + coords.y;
+    ctx.fillText(buildingText, 38, 50 + i*10);
   }
 
-  for(i = 0; i < objects.length; i++)
+  for(i = 0; i < opponents.length; i++)
   {
-    x = opponents[i].x;
-    y = opponents[i].y;
-    getLocalCoords(player, canvas, x, y);
-    drawcar(ctx,
-            x,
-            y,
+    var coords = getCarLocalCoords(player, canvas, opponents[i].x, opponents[i].y);
+    drawCar(ctx,
+            coords.x,
+            coords.y,
             opponents[i].w,
             opponents[i].h,
             opponents[i].angle);
-  }
 
+    var playerText = "Players: " + opponents[i].x + " x " + opponents[i].y;
+    ctx.fillText(playerText, 38, 200 + i*10);
+    var playerText = "Players: " + coords.x + " x " + coords.y;
+    ctx.fillText(playerText, 38, 300 + i*10);
+
+
+  }
   ctx.restore();
 }
 
@@ -110,6 +120,6 @@ function building(color, pos_x, pos_y, width, height)
 
 function draw(canvas)
 {
-  drawcar(12,12);
+  drawCar(12,12);
   drawbackground(objects, 5, canvas);
 }

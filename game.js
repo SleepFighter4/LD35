@@ -11,10 +11,12 @@ var Player = require('./Player').Player;
 var loop;
 var players = [];
 var objects = [
-  {"x":50,
-  "y":50,
-  "w":50,
-  "h":50}
+  {"x":50,"y":50,"w":50,"h":50},
+  {"x":150,"y":50,"w":50,"h":50},
+  {"x":250,"y":50,"w":50,"h":50},
+  {"x":50,"y":150,"w":50,"h":50},
+  {"x":50,"y":250,"w":50,"h":50},
+  {"x":50,"y":350,"w":50,"h":50}
 ];
 var scores = [];
 var frameDelay = 40;
