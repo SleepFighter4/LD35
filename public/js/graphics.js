@@ -78,7 +78,7 @@ function drawObjects(objects, opponents, player, canvas, ctx)
 
   ctx.save();
   ctx.translate(canvas.width/2, canvas.height/2);
-  ctx.rotate(player.angle*Math.PI/180);
+  ctx.rotate(-player.angle*Math.PI/180);
 
   for(i = 0; i < objects.length; i++)
   {
