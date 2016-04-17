@@ -109,8 +109,8 @@ function movePlayers() {
 
     p.vX += engineAccelerationX * delta;
     p.vY += engineAccelerationY * delta;
-    p.vX *= (1 - (0.1 * delta)) // Dampening
-    p.vY *= (1 - (0.1 * delta)) // Dampening
+    p.vX *= (1 - (0.4 * delta)) // Dampening
+    p.vY *= (1 - (0.4 * delta)) // Dampening
 
     p.x += p.vX * delta;
     p.y += p.vY * delta;

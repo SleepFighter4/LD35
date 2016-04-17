@@ -58,7 +58,7 @@ function registerSocketHooks() {
     objects = obj.objects;
     scores = obj.scores;
   })
-  socket.on('ping', function(p){
+  socket.on('ping', function(p) {
     socket.emit('ping response', p);
   });
 }
@@ -101,9 +101,15 @@ function drawObjects() {
 function drawPlayers() {
   if (typeof(players) != 'undefined' && typeof(player) != 'undefined') {
     for (var i = 0; i < players.length; i++) {
-      var coords = getLocalCoords(players[i].x, players[i].y);
+      var p = players[i];
+      var coords = getLocalCoords(p.x, p.y);
+      ctx.save();
+      ctx.translate(coords.x, coords.y);
+      ctx.rotate(p.angle * RADIANS_PER_DEG);
       ctx.fillStyle = "#FF0000";
-      ctx.fillRect(coords.x, coords.y, 50, 100);
+      ctx.fillRect(coords.x - p.w / 2, coords.y - p.h / 2, p.w, p.h);
+      ctx.rect(coords.x - p.w / 2, coords.y - p.h / 2, p.w, p.h);
+      ctx.restore();
     }
   }
 }
