@@ -68,8 +68,8 @@ function updateCanvas() {
   if (typeof(player) != 'undefined') {
     //Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawObjects();
-    drawPlayers();
+    drawObjects(objects, players, player, canvas, ctx);
+    drawPlayer(player, canvas, ctx);
     drawUI();
   }
 }
@@ -90,15 +90,15 @@ function getLocalCoords(x, y) {
   };
 }
 
-function drawObjects() {
+/*function drawObjects() {
   for (var i = 0; i < objects.length; i++) {
     var coords = getLocalCoords(objects[i].x, objects[i].y);
     ctx.fillStyle = "#00FF00";
     ctx.fillRect(coords.x, coords.y, 50, 50);
   }
-}
+}*/
 
-function drawPlayers() {
+/*Function drawPlayers() {
   if (typeof(players) != 'undefined' && typeof(player) != 'undefined') {
     for (var i = 0; i < players.length; i++) {
       var p = players[i];
@@ -112,7 +112,7 @@ function drawPlayers() {
       ctx.restore();
     }
   }
-}
+}*/
 
 function drawUI() {
   if (typeof(player) != player.ping) {
