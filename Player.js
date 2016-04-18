@@ -1,5 +1,6 @@
-function Player(id) {
+function Player(id, name) {
   this.id = id;
+  this.name = name;
   this.x = 100.0;
   this.y = -100.0;
   this.w = 60;
@@ -18,5 +19,7 @@ function Player(id) {
   this.lastYGrid = null;
   this.ping = 0;
   this.pingStart = Date.now();
+  this.checkPoint = 0;
+  this.participating = true;;
 }
 exports.Player = Player;

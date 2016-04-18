@@ -35,6 +35,11 @@ var vMax = 200; // px / sec
 var friction = 1;
 var mapCurrXLimits = [-10000,10000];
 var mapCurrYLimits = [-10000,10000];
+var roundStartTime = 0;
+var nameID = 1;
+var lapTimes = [];
+var roundTimeLimit = 120; // seconds
+var roundStarting = false;
 
 //Grid variables
 var gridSize = 200;
@@ -59,6 +64,7 @@ exports.run = run;
 
 function gameLoop() {
   movePlayers();
+  handleRounds();
   sendUpdates();
 }
 
@@ -66,15 +72,18 @@ function gameLoop() {
 var playerColour=1;
 
 function initialiseClient(socket) {
-  var player = new Player(socket.id);
+  var player = new Player(socket.id, "Player " + (nameID++));
   player.c = playerColour;
   if(playerColour > 3){playerColour = 1;}
   else {playerColour++;}
   players.push(player);
-  if (players.length == 1) log('A user connected. There is now 1 user.');
-  else log('A user connected. There are now ' + (players.length).toString() + ' users.');
+  log('A user connected.');
+  logNumUsers();
   socket.emit('ping', '');
   socket.emit('map', mapUtils.map);
+  socket.emit('server message', "Welcome.");
+  socket.emit('lap times', lapTimes);
+  chooseMode(socket, player);
 
   socket.on('key update', function(keyState) {
     if (typeof(player) != 'undefined') {
@@ -95,10 +104,31 @@ function initialiseClient(socket) {
   socket.on('disconnect', function() {
     if (typeof(player) != 'undefined') {
       players.splice(players.indexOf(player), 1);
-      if (players.length == 1) log('A user disconnected. There is now 1 user.');
-      else log('A user disconnected. There are now ' + (players.length).toString() + ' users.');
+      log('A user disconnected.');
+      logNumUsers();
+      if (players.length == 1) {
+        socket.emit('server message', "Entering single player mode.");
+      }
     }
   });
+}
+
+function logNumUsers() {
+  if (players.length == 1) log('There is now 1 user.');
+  else log('There are now ' + (players.length).toString() + ' users.');
+}
+
+function chooseMode(socket, player) {
+  if (players.length == 2) {
+    io.sockets.emit('server message', "Entering multiplayer mode.");
+    roundStartTime = 0;
+  } else if (players.length == 1) {
+    io.sockets.emit('server message', "Entering single player mode.");
+    roundStarting = false;
+  } else if (players.length > 2) {
+    player.participating = false;
+    socket.emit('round in progress', Date.now() - roundStartTime);
+  }
 }
 
 function movePlayers() {
@@ -109,6 +139,7 @@ function movePlayers() {
   playerIndexGrid = setupObjectGrids();
   for (var i = 0; i < players.length; i++) {
     var p = players[i];
+    if (!p.participating || roundStarting) continue;
     var delta = (Date.now() - p.lastMovedTime) / 1000.0;
     var rotationDirection = 0;
     var forwardAcc = 0;
@@ -225,6 +256,76 @@ function collides(o1, o2) {
   return false;
 }
 
+function handleRounds() {
+  if (players.length <= 1) return;
+  if (((Date.now()-roundStartTime)/1000 > roundTimeLimit || lapTimes.Length == players.length) && !roundStarting) {
+    // Round has hit time limit or all players have finished.
+    prepareNewRound();
+  }
+  if (!roundStarting) {
+    for (var i = 0; i < players.length; i++) {
+      var p = players[i]
+      var playerFinished = 0;
+      if (playerFinished) {
+        lapTimes.push({
+          "name": p.name,
+          "time": (Date.now()-roundStartTime)/1000
+        });
+        io.sockets.emit('lap times', lapTimes);
+      }
+      // If player crosses finish line, add lap time to a "previous lap times" board.
+      // If last player finished round, spawn players again.
+    }
+  }
+}
+
+function prepareNewRound() {
+  log("Round starting.");
+  var startCountdownTime = 3; 
+  setTimeout(startRound, 3 * 1000);
+  io.sockets.emit('round starting', startCountdownTime);
+  roundStarting = true;
+  for (var i = 0; i < players.length; i++) {
+    var p = players[i];
+    p.x = 30 + i * 30;
+    p.y = -100;
+    p.w = 20;
+    p.h = 100;
+    p.angle = -90.0;
+    // Stop them from moving.
+  }
+  for (var i = 0; i < players.length; i++) {
+    var p = players[i];
+    var socket = io.sockets.connected[p.id];
+    socket.emit('player', p);
+    var objsToSend = {
+      "players": players,
+      "objects": objects,
+      "scores": scores
+    }
+    socket.emit('game data', objsToSend);
+  }
+}
+
+function startRound() {
+  log("Round started.");
+  roundStartTime = Date.now();
+  roundStarting = false;
+  for (var i = 0; i < players.length; i++) {
+    var p = players[i];
+    p.x = 30 + i * 30;
+    p.y = -100;
+    p.w = 20;
+    p.h = 100;
+    p.angle = -90.0;
+    p.lastMovedTime = Date.now();
+    p.participating = true;
+  }
+  lapTimes = [];
+  io.sockets.emit('lap times', lapTimes);
+  io.sockets.emit('round started', roundTimeLimit);
+}
+
 function setupObjectGrids() {
   var grids = [];
   for (var w = mapCurrXLimits[0]; w <= mapCurrXLimits[1]+1; w += gridSize) {
@@ -300,7 +401,8 @@ function sendUpdates() {
     var socket = io.sockets.connected[p.id];
     if (typeof(socket) != 'undefined') {
       // Send the player's individual object.
-      socket.emit('player', p);
+      if (p.participating) socket.emit('player', p);
+      else socket.emit('player', players[0]);
       // Send the rest content requried for drawing the game.
       socket.emit('game data', objsToSend);
     }

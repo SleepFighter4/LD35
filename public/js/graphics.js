@@ -121,7 +121,7 @@ function drawObjects(objects, opponents, player, canvas, ctx)
   for(i = 0; i < opponents.length; i++)
   {
     var coords = getCarLocalCoords(player, canvas, opponents[i].x, opponents[i].y);
-    if(opponents[i].id != player.id)
+    if(opponents[i].id != player.id && opponents[i].participating)
     {
       drawCar(ctx,
             coords.x/*-(opponents[i].w/2)*/,

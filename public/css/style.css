@@ -31,3 +31,12 @@ html, body {
 [data-suffix]::after {
   content: " " attr(data-suffix);
 }
+
+#ui-prevLapTimes {
+  display: none;
+  width: 150px;
+  border-style: solid;
+  border-width: 2px;
+  padding: 10px;
+  text-align: left;
+}
