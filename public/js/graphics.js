@@ -23,12 +23,16 @@ function centerText(canvas, ctx, string)
       ctx.fillText(string, (canvas.width/2), (canvas.height/2));
 }
 
-function drawBuilding(ctx, x, y, width, height, color)
+function drawBuilding(ctx, x, y, width, height, angle, color)
 {
+  //ctx.save();
+  //ctx.translate(x+width/2, y+height/2);
+  //ctx.rotate((angle-90)*Math.PI/180);
   if(color == 1){ctx.drawImage(building1, x, y, width, height);}
   else if(color == 2){ctx.drawImage(building2, x, y, width, height);}
   else if(color == 3){ctx.drawImage(building3, x, y, width, height);}
   else {ctx.drawImage(building1, x, y, width, height);}
+  //ctx.restore();
   //BODY
   /*ctx.fillStyle = "#101010";
   ctx.fillRect(pos_x, pos_y, width, height);*/
