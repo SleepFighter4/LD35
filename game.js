@@ -102,7 +102,7 @@ function initialiseClient(socket) {
 }
 
 function movePlayers() {
-  var acceleration = 200;
+  var acceleration = 300;
   var rotationSpeed = 2;
   var deformationSpeed = 100;
   
@@ -139,7 +139,7 @@ function movePlayers() {
     var drift;
     var velocity = Math.sqrt(p.vX*p.vY);
     if(velocity < 200) drift = 1;
-    else if(velocity > 500) drift = 0.2;
+    else if(velocity > 400) drift = 0.2;
     else drift = 0.5;
 
     p.angle = (p.angle + rotationDirection * p.rotationSpeed * delta) % 360;
