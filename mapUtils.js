@@ -17,6 +17,7 @@ var leftPath = [
 var width = 200;
 var map = [leftPath, generateRightPath(leftPath, width)];
 exports.map = map;
+exports.mapLines = getMapLines(map);
 
 function generateRightPath(leftPath, width) {
   var rightPath = [];
@@ -91,3 +92,20 @@ function lineIntersection(l1StartX, l1StartY, l1EndX, l1EndY, l2StartX, l2StartY
   // if line1 and line2 are segments, they intersect if both of the above are true
   return result;
 }
+
+function getMapLines(map) {
+  var mapLines = [];
+  for (var side = 0; side < 2; side++) {
+    var mapPoints = map[side];
+    for (var i = 0; i < mapPoints.length; i++) {
+      mapLines.push([
+        [mapPoints[i].x, 
+        mapPoints[i].y],
+        [mapPoints[(i + 1) % mapPoints.length].x,
+        mapPoints[(i + 1) % mapPoints.length].y]
+      ]);
+    }
+  }
+  return mapLines;
+}
+exports.lineIntersection = lineIntersection;
