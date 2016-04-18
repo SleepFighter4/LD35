@@ -18,9 +18,13 @@ var building2 = new Image(); building2.src = 'images/BuildingBlue.png';
 var building3 = new Image(); building3.src = 'images/BuildingGreen.png';
 var BUILDING_NO = 2
 
+function centerText(canvas, ctx, string)
+{
+      ctx.fillText(string, (canvas.width/2), (canvas.height/2));
+}
+
 function drawBuilding(ctx, x, y, width, height, color)
 {
-  console.log("BColor " + color);
   if(color == 1){ctx.drawImage(building1, x, y, width, height);}
   else if(color == 2){ctx.drawImage(building2, x, y, width, height);}
   else if(color == 3){ctx.drawImage(building3, x, y, width, height);}
@@ -88,13 +92,14 @@ function drawPlayer(player, canvas, ctx)
   var x=canvas.width/2;
   var y=canvas.height/2;
   drawCar(ctx, x, y, player.w, player.h, 90, player.c);
-  var playerText = "Player: " + player.x + " x " + player.y;
-  ctx.fillText(playerText, 38, 40);
+  /*var playerText = "Player: " + player.x + " x " + player.y;
+  ctx.fillText(playerText, 38, 40);*/
 }
 
 function drawObjects(objects, opponents, player, canvas, ctx)
 {
   var i, x, y;
+
 
   ctx.save();
   ctx.translate(canvas.width/2, canvas.height/2);
@@ -123,12 +128,13 @@ function drawObjects(objects, opponents, player, canvas, ctx)
             coords.y/*-(opponents[i].h/2)*/,
             opponents[i].w,
             opponents[i].h,
-            opponents[i].angle);
-
-      var playerText = "Players: " + opponents[i].x + " x " + opponents[i].y;
+            opponents[i].angle,
+            opponents[i].c);
+      console.log(opponents[i].c);
+      /*var playerText = "Players: " + opponents[i].x + " x " + opponents[i].y;
       ctx.fillText(playerText, 38, 200 + i*10);
       var playerText = "Players: " + coords.x + " x " + coords.y;
-      ctx.fillText(playerText, 38, 300 + i*10);
+      ctx.fillText(playerText, 38, 300 + i*10);*/
     } 
   }
 
@@ -156,6 +162,8 @@ function drawObjects(objects, opponents, player, canvas, ctx)
     }
   }
   ctx.restore();
+
+  centerText(canvas, ctx,"15");
 }
 
 function building(color, pos_x, pos_y, width, height)
@@ -177,3 +185,5 @@ function draw(canvas)
   drawCar(12,12);
   drawbackground(objects, 5, canvas);
 }
+
+
