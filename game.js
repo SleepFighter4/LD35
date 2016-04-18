@@ -94,6 +94,10 @@ function initialiseClient(socket) {
 }
 
 function movePlayers() {
+  var acceleration = 200;
+  var rotationSpeed = 2;
+  var deformationSpeed = 100;
+
   playerIndexGrid = setupObjectGrids(players);
   for (var i = 0; i < players.length; i++) {
     var p = players[i];
@@ -102,23 +106,23 @@ function movePlayers() {
     var forwardAcc = 0;
 
     if (p.keyState[KEY_CODES.LEFT]) {
-      rotationDirection = -2;
+      rotationDirection = -rotationSpeed;
     } else if (p.keyState[KEY_CODES.RIGHT]) {
-      rotationDirection = 2;
+      rotationDirection = rotationSpeed;
     }
 
     if (p.keyState[KEY_CODES.UP]) {
-      forwardAcc = 200;
+      forwardAcc = acceleration;
     } else if (p.keyState[KEY_CODES.DOWN]) {
-      forwardAcc = -200;
+      forwardAcc = -acceleration;
     }
 
     if (p.keyState[KEY_CODES.A]) {
-      p.w += delta * 100;
-      p.h -= delta * 100;
+      p.w += delta * deformationSpeed;
+      p.h -= delta * deformationSpeed;
     } else if (p.keyState[KEY_CODES.S]) {
-      p.w -= delta * 100;
-      p.h += delta * 100;
+      p.w -= delta * deformationSpeed;
+      p.h += delta * deformationSpeed;
     }
     p.w = Math.min(Math.max(p.w, 20), 130);
     p.h = Math.min(Math.max(p.h, 20), 130);
