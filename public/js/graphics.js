@@ -8,23 +8,41 @@ var CAR_GLASS_COLOR="#6699ff"
 var backgroundcanvas;
 
 //IMAGES
-var playerCar = new Image(); playerCar.src = 'images/GreenCar.png';
-var building1 = new Image(); building1 .src = 'images/BuildingPink.png';
+var car1 = new Image(); car1.src = 'images/GreenCar.png';
+var car2 = new Image(); car2.src = 'images/RedCar.png';
+var car3 = new Image(); car3.src = 'images/BlueCar.png';
+var CAR_NO = 1;
 
-function drawBuilding(ctx, x, y, width, height)
+var building1 = new Image(); building1.src = 'images/BuildingPink.png';
+var building2 = new Image(); building2.src = 'images/BuildingBlue.png';
+var building3 = new Image(); building3.src = 'images/BuildingGreen.png';
+var BUILDING_NO = 2
+
+function drawBuilding(ctx, x, y, width, height, color)
 {
-  ctx.drawImage(building1, x, y, width, height);
+  console.log("BColor " + color);
+  if(color == 1){ctx.drawImage(building1, x, y, width, height);}
+  else if(color == 2){ctx.drawImage(building2, x, y, width, height);}
+  else if(color == 3){ctx.drawImage(building3, x, y, width, height);}
+  else {ctx.drawImage(building1, x, y, width, height);}
   //BODY
   /*ctx.fillStyle = "#101010";
   ctx.fillRect(pos_x, pos_y, width, height);*/
 }
 
-function drawCar(ctx, x, y, width, height, rotation)
+function drawCar(ctx, x, y, width, height, angle, color)
 {
   x -= width/2;
   y -= height/2;
-  
-  ctx.drawImage(playerCar, x, y, width, height);
+
+  ctx.save();
+  ctx.translate(x+width/2, y+height/2);
+  ctx.rotate((angle-90)*Math.PI/180);
+  if(color == 1){ctx.drawImage(car1, -width/2, -height/2, width, height);}
+  else if(color == 2){ctx.drawImage(car2, -width/2, -height/2, width, height);}
+  else if(color == 3){ctx.drawImage(car3, -width/2, -height/2, width, height);}
+  else {ctx.drawImage(car1, -width/2, -height/2, width, height);}
+  ctx.restore();
   /*function tx(a){return x+a*width;}
   function ty(a){return y+a*height;}
   function bx(a){return a*width;}
@@ -69,7 +87,7 @@ function drawPlayer(player, canvas, ctx)
 {
   var x=canvas.width/2;
   var y=canvas.height/2;
-  drawCar(ctx, x, y, player.w, player.h, 0);
+  drawCar(ctx, x, y, player.w, player.h, 90, player.c);
   var playerText = "Player: " + player.x + " x " + player.y;
   ctx.fillText(playerText, 38, 40);
 }
@@ -89,7 +107,8 @@ function drawObjects(objects, opponents, player, canvas, ctx)
                  coords.x,
                  coords.y,
                  objects[i].w,
-                 objects[i].h);
+                 objects[i].h,
+                 objects[i].c);
     //var buildingText = "Buildings: " + coords.x + " x " + coords.y;
     //ctx.fillText(buildingText, 38, 50 + i*10);
   }
@@ -100,8 +119,8 @@ function drawObjects(objects, opponents, player, canvas, ctx)
     if(opponents[i].id != player.id)
     {
       drawCar(ctx,
-            coords.x,
-            coords.y,
+            coords.x/*-(opponents[i].w/2)*/,
+            coords.y/*-(opponents[i].h/2)*/,
             opponents[i].w,
             opponents[i].h,
             opponents[i].angle);

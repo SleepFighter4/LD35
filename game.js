@@ -12,12 +12,12 @@ var Player = require('./Player').Player;
 var loop;
 var players = [];
 var objects = [
-  {"x":50,"y":50,"w":50,"h":50},
-  {"x":250,"y":100,"w":100,"h":100},
-  {"x":250,"y":50,"w":50,"h":50},
-  {"x":50,"y":150,"w":50,"h":50},
-  {"x":500,"y":1000,"w":50,"h":50},
-  {"x":50,"y":350,"w":50,"h":50}
+  {"x":50,"y":50,"w":50,"h":50,"c":1},
+  {"x":250,"y":100,"w":100,"h":100,"c":2},
+  {"x":250,"y":50,"w":50,"h":50,"c":3},
+  {"x":50,"y":150,"w":50,"h":50,"c":1},
+  {"x":500,"y":1000,"w":50,"h":50,"c":2},
+  {"x":50,"y":350,"w":50,"h":50,"c":3}
 ];
 var scores = [];
 var frameDelay = 40;
@@ -62,8 +62,14 @@ function gameLoop() {
   sendUpdates();
 }
 
+//Player Colour
+var playerColour=1;
+
 function initialiseClient(socket) {
   var player = new Player(socket.id);
+  player.c = playerColour;
+  if(playerColour > 3){playerColour = 1;}
+  else {playerColour++;}
   players.push(player);
   if (players.length == 1) log('A user connected. There is now 1 user.');
   else log('A user connected. There are now ' + (players.length).toString() + ' users.');
