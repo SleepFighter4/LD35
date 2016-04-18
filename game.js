@@ -12,12 +12,12 @@ var Player = require('./Player').Player;
 var loop;
 var players = [];
 var objects = [
-  {"x":50,"y":50,"w":50,"h":50,"c":1},
-  {"x":250,"y":100,"w":100,"h":100,"c":2},
-  {"x":250,"y":50,"w":50,"h":50,"c":3},
-  {"x":50,"y":150,"w":50,"h":50,"c":1},
-  {"x":500,"y":1000,"w":50,"h":50,"c":2},
-  {"x":50,"y":350,"w":50,"h":50,"c":3}
+  {angle:0, "x":50,"y":50,"w":50,"h":50,"c":1},
+  {angle:0, "x":250,"y":100,"w":100,"h":100,"c":2},
+  {angle:0, "x":250,"y":50,"w":50,"h":50,"c":3},
+  {angle:0, "x":50,"y":150,"w":50,"h":50,"c":1},
+  {angle:0, "x":500,"y":1000,"w":50,"h":50,"c":2},
+  {angle:0, "x":50,"y":350,"w":50,"h":50,"c":3}
 ];
 var scores = [];
 var frameDelay = 40;
@@ -135,6 +135,14 @@ function movePlayers() {
     p.w = Math.min(Math.max(p.w, 20), 130);
     p.h = Math.min(Math.max(p.h, 20), 130);
 
+    // Collisions
+    for (var i in objects) {
+      if (collides(objects[i], p)) {
+        console.log("Player collision with:", objects[i]);
+        // TODO: divert player
+      }
+    }
+
     //Phil's terrible drift stuff
     var drift;
     var velocity = Math.sqrt(p.vX*p.vY);
@@ -159,6 +167,62 @@ function movePlayers() {
     p.yGrid = Math.floor(p.y / gridSize) + numNegYGrids;
     playerIndexGrid[p.xGrid][p.yGrid].push(i);
   }
+}
+
+/*
+ * input:  2 objects with {x,y, w,h, angle}
+ * output: true if objects collide
+ */
+function collides(o1, o2) {
+  var o1cornerinfo = {
+        dist: Math.sqrt(o1.w/2 + o1.h/2),
+        angle: Math.atan(o1.w / o1.h) + o1.angle
+      },
+      o2cornerinfo = {
+        dist: Math.sqrt(o2.w/2 + o2.h/2),
+        angle: Math.atan(o2.w / o2.h) + o2.angle
+      };
+
+  var o1corners = [
+    { x: o1.x + o1cornerinfo.dist * Math.cos(  0 + o1cornerinfo.angle * RADIANS_PER_DEG),
+      y: o1.y + o1cornerinfo.dist * Math.sin(  0 + o1cornerinfo.angle * RADIANS_PER_DEG) },
+    { x: o1.x + o1cornerinfo.dist * Math.cos(180 - o1cornerinfo.angle * RADIANS_PER_DEG),
+      y: o1.y - o1cornerinfo.dist * Math.sin(180 - o1cornerinfo.angle * RADIANS_PER_DEG) },
+    { x: o1.x - o1cornerinfo.dist * Math.cos(180 + o1cornerinfo.angle * RADIANS_PER_DEG),
+      y: o1.y - o1cornerinfo.dist * Math.sin(180 + o1cornerinfo.angle * RADIANS_PER_DEG) },
+    { x: o1.x - o1cornerinfo.dist * Math.cos(360 - o1cornerinfo.angle * RADIANS_PER_DEG),
+      y: o1.y + o1cornerinfo.dist * Math.sin(360 - o1cornerinfo.angle * RADIANS_PER_DEG) },
+  ];
+
+  var o2corners = [
+    { x: o2.x + o2cornerinfo.dist * Math.cos(  0 + o2cornerinfo.angle * RADIANS_PER_DEG),
+      y: o2.y + o2cornerinfo.dist * Math.sin(  0 + o2cornerinfo.angle * RADIANS_PER_DEG) },
+    { x: o2.x + o2cornerinfo.dist * Math.cos(180 - o2cornerinfo.angle * RADIANS_PER_DEG),
+      y: o2.y - o2cornerinfo.dist * Math.sin(180 - o2cornerinfo.angle * RADIANS_PER_DEG) },
+    { x: o2.x - o2cornerinfo.dist * Math.cos(180 + o2cornerinfo.angle * RADIANS_PER_DEG),
+      y: o2.y - o2cornerinfo.dist * Math.sin(180 + o2cornerinfo.angle * RADIANS_PER_DEG) },
+    { x: o2.x - o2cornerinfo.dist * Math.cos(360 - o2cornerinfo.angle * RADIANS_PER_DEG),
+      y: o2.y + o2cornerinfo.dist * Math.sin(360 - o2cornerinfo.angle * RADIANS_PER_DEG) },
+  ];
+
+  var o1previouscorner = o1corners[o1corners.length-1];
+  for (var i in o1corners) {
+    var o1currentcorner = o1corners[i];
+
+    var normal = {
+      x:  Math.abs(o1currentcorner.x - o1previouscorner.x),
+      y: -Math.abs(o1currentcorner.y - o1previouscorner.y)
+    };
+
+    //TODO: project both shapes on normal
+    //TODO: if projections don't overlap, no intersection, keep going, otherwise return true
+
+    o1previouscorner = o1currentcorner;
+  }
+
+  //TODO: same thing with o2corners
+
+  return false;
 }
 
 function setupObjectGrids() {
