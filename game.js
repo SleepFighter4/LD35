@@ -243,8 +243,8 @@ function collides(o1, o2) {
     var o1currentcorner = o1corners[i];
 
     var normal = {
-      x:  Math.abs(o1currentcorner.x - o1previouscorner.x),
-      y: -Math.abs(o1currentcorner.y - o1previouscorner.y)
+      x:  o1currentcorner.x - o1previouscorner.x,
+      y: -o1currentcorner.y - o1previouscorner.y
     };
     var o1proj = project(o1corners, normal);
     var o2proj = project(o2corners, normal);
@@ -260,8 +260,8 @@ function collides(o1, o2) {
     var o2currentcorner = o2corners[i];
 
     var normal = {
-      x:  Math.abs(o2currentcorner.x - o2previouscorner.x),
-      y: -Math.abs(o2currentcorner.y - o2previouscorner.y)
+      x:  o2currentcorner.x - o2previouscorner.x,
+      y: -o2currentcorner.y - o2previouscorner.y
     };
 
     var o1proj = project(o1corners, normal);
