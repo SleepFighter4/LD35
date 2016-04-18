@@ -99,8 +99,8 @@ function movePlayers() {
   var acceleration = 200;
   var rotationSpeed = 2;
   var deformationSpeed = 100;
-
-  playerIndexGrid = setupObjectGrids(players);
+  
+  playerIndexGrid = setupObjectGrids();
   for (var i = 0; i < players.length; i++) {
     var p = players[i];
     var delta = (Date.now() - p.lastMovedTime) / 1000.0;
@@ -151,11 +151,11 @@ function movePlayers() {
     p.lastMovedTime = Date.now();
     p.xGrid = Math.floor(p.x / gridSize) + numNegXGrids;
     p.yGrid = Math.floor(p.y / gridSize) + numNegYGrids;
-    //playerIndexGrid[p.xGrid][p.yGrid].push(i);
+    playerIndexGrid[p.xGrid][p.yGrid].push(i);
   }
 }
 
-function setupObjectGrids(objects) {
+function setupObjectGrids() {
   var grids = [];
   for (var w = mapCurrXLimits[0]; w <= mapCurrXLimits[1]+1; w += gridSize) {
     var gridCol = [];
@@ -164,8 +164,8 @@ function setupObjectGrids(objects) {
     }
     grids.push(gridCol);
   }
-  var numNegXGrids = -Math.min(Math.floor(mapCurrXLimits[0] / gridSize), 0);
-  var numNegYGrids = -Math.min(Math.floor(mapCurrYLimits[0] / gridSize), 0);
+  numNegXGrids = -Math.min(Math.floor(mapCurrXLimits[0] / gridSize), 0);
+  numNegYGrids = -Math.min(Math.floor(mapCurrYLimits[0] / gridSize), 0);
   return grids;
 }
 
@@ -214,8 +214,6 @@ function getObjectsForPlayer(p, playerIndexGrid, objectIndexGrid) {
 }
 
 function sendUpdates() {
-  //var playerIndexGrid = sortObjectsIntoGrids(players);
-
   for (var i = 0; i < players.length; i++) {
     var p = players[i];
 

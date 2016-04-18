@@ -18,9 +18,9 @@ function pathToBoxes(path) {
 
     boxes.push({
       'x': (previousStep.x + currentStep.x) / 2,
-      'y': (previousStep.y + currentStep.y) / 2
+      'y': (previousStep.y + currentStep.y) / 2,
       'w': Math.max(width,  minThickness),
-      'h': Math.max(height, minThickness),
+      'h': Math.max(height, minThickness)
     });
 
     previousStep = currentStep;
