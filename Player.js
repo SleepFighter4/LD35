@@ -1,12 +1,12 @@
 function Player(id) {
   this.id = id;
-  this.x = 0.0;
-  this.y = 0.0;
+  this.x = 100.0;
+  this.y = -100.0;
   this.w = 60;
   this.h = 90;
   this.vX = 0.0;
   this.vY = 0.0;
-  this.angle = 90.0;
+  this.angle = -90.0;
   this.rotationSpeed = 45.0;
   this.shiftFactor = 1.0;
   this.keyState = {};

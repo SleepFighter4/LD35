@@ -1,6 +1,7 @@
 "use strict"
 
 // Modules
+var mapUtils = require('./mapUtils.js');
 var ioStart = require('socket.io');
 var io;
 
@@ -66,7 +67,8 @@ function initialiseClient(socket) {
   players.push(player);
   if (players.length == 1) log('A user connected. There is now 1 user.');
   else log('A user connected. There are now ' + (players.length).toString() + ' users.');
-  socket.emit('ping','');
+  socket.emit('ping', '');
+  socket.emit('map', mapUtils.map);
 
   socket.on('key update', function(keyState) {
     if (typeof(player) != 'undefined') {
