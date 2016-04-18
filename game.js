@@ -244,16 +244,52 @@ function collides(o1, o2) {
       x:  Math.abs(o1currentcorner.x - o1previouscorner.x),
       y: -Math.abs(o1currentcorner.y - o1previouscorner.y)
     };
+    var o1proj = project(o1corners, normal);
+    var o2proj = project(o2corners, normal);
 
-    //TODO: project both shapes on normal
-    //TODO: if projections don't overlap, no intersection, keep going, otherwise return true
+    if (o1proj.max < o2proj.min || o2proj.max < o1proj.min)
+      return false;
 
     o1previouscorner = o1currentcorner;
   }
 
-  //TODO: same thing with o2corners
+  var o2previouscorner = o2corners[o2corners.length-1];
+  for (var i in o2corners) {
+    var o2currentcorner = o2corners[i];
 
-  return false;
+    var normal = {
+      x:  Math.abs(o2currentcorner.x - o2previouscorner.x),
+      y: -Math.abs(o2currentcorner.y - o2previouscorner.y)
+    };
+
+    var o1proj = project(o1corners, normal);
+    var o2proj = project(o2corners, normal);
+
+    if (o1proj.max < o2proj.min || o2proj.max < o1proj.min)
+      return false;
+
+    o1previouscorner = o1currentcorner;
+  }
+
+  return true;
+}
+
+function dot(a, b) {
+  return a.x * b.x + a.y * b.y;
+}
+
+function project(corners, axis) {
+  var min = dot(axis, corners[0]);
+  var max = min;
+  for (var i = 1; i < corners.length; i++) {
+    var p = dot(axis, corners[i]);
+    if (p < min) {
+      min = p;
+    } else if (p > max) {
+      max = p;
+    }
+  }
+  return {min: min, max: max};
 }
 
 function handleRounds() {
