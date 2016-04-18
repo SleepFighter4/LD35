@@ -90,8 +90,8 @@ function drawObjects(objects, opponents, player, canvas, ctx)
                  coords.y,
                  objects[i].w,
                  objects[i].h);
-    var buildingText = "Buildings: " + coords.x + " x " + coords.y;
-    ctx.fillText(buildingText, 38, 50 + i*10);
+    //var buildingText = "Buildings: " + coords.x + " x " + coords.y;
+    //ctx.fillText(buildingText, 38, 50 + i*10);
   }
 
   for(i = 0; i < opponents.length; i++)
