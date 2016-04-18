@@ -10,6 +10,7 @@ var ctx = canvas.getContext("2d");
 var canvasSize = {"x":canvas.width,"y":canvas.height};
 var keyState = {};
 var socket;
+var map = [];
 
 //Utilities
 var usedKeys = [37, 38, 39, 40, 32, 65, 83];
@@ -57,6 +58,9 @@ function registerSocketHooks() {
   socket.on('player', function(p) {
     player = p;
   })
+  socket.on('map', function(m) {
+    map = m
+  });
   socket.on('game data', function(obj) {
     players = obj.players;
     objects = obj.objects;

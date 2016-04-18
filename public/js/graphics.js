@@ -110,6 +110,30 @@ function drawObjects(objects, opponents, player, canvas, ctx)
       ctx.fillText(playerText, 38, 200 + i*10);
       var playerText = "Players: " + coords.x + " x " + coords.y;
       ctx.fillText(playerText, 38, 300 + i*10);
+    } 
+  }
+
+  ctx.lineWidth = 10;
+  for(var side = 0; side < 2; side++)
+  {
+    var points = map[side];
+    for(var p = 0; p < points.length; p++)
+    {
+      ctx.beginPath();
+      var coords = getCarLocalCoords(player,
+        canvas,
+        points[p].x,
+        points[p].y
+      )
+      ctx.moveTo(coords.x, coords.y);
+      var coords = getCarLocalCoords(
+        player,
+        canvas,
+        points[(p + 1) % map[side].length].x,
+        points[(p + 1) % map[side].length].y
+      )
+      ctx.lineTo(coords.x, coords.y);
+      ctx.stroke();
     }
   }
   ctx.restore();
