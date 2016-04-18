@@ -9,12 +9,14 @@ var backgroundcanvas;
 
 //IMAGES
 var playerCar = new Image(); playerCar.src = 'images/GreenCar.png';
+var building1 = new Image(); building1 .src = 'images/BuildingPink.png';
 
-function drawBuilding(ctx, pos_x, pos_y, width, height)
+function drawBuilding(ctx, x, y, width, height)
 {
+  ctx.drawImage(building1, x, y, width, height);
   //BODY
-  ctx.fillStyle = "#101010";
-  ctx.fillRect(pos_x, pos_y, width, height);
+  /*ctx.fillStyle = "#101010";
+  ctx.fillRect(pos_x, pos_y, width, height);*/
 }
 
 function drawCar(ctx, x, y, width, height, rotation)
@@ -86,8 +88,8 @@ function drawObjects(objects, opponents, player, canvas, ctx)
     drawBuilding(ctx,
                  coords.x,
                  coords.y,
-                 50,//objects[i].w,
-                 50);//objects[i].h);
+                 objects[i].w,
+                 objects[i].h);
     var buildingText = "Buildings: " + coords.x + " x " + coords.y;
     ctx.fillText(buildingText, 38, 50 + i*10);
   }
