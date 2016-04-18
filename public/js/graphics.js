@@ -7,6 +7,9 @@ var CAR_GLASS_COLOR="#6699ff"
 
 var backgroundcanvas;
 
+//IMAGES
+var playerCar = new Image(); playerCar.src = 'images/GreenCar.png';
+
 function drawBuilding(ctx, pos_x, pos_y, width, height)
 {
   //BODY
@@ -18,8 +21,9 @@ function drawCar(ctx, x, y, width, height, rotation)
 {
   x -= width/2;
   y -= height/2;
-
-  function tx(a){return x+a*width;}
+  
+  ctx.drawImage(playerCar, x, y, width, height);
+  /*function tx(a){return x+a*width;}
   function ty(a){return y+a*height;}
   function bx(a){return a*width;}
   function by(a){return a*height;}
@@ -39,9 +43,9 @@ function drawCar(ctx, x, y, width, height, rotation)
   //BACKWINDSHIELD
   ctx.fillStyle = CAR_GLASS_COLOR;
   ctx.fillRect(tx(0.05),ty(0.65),bx(0.90),by(0.15));
-  //BOOT
+  //BOsOT
   ctx.fillStyle = CAR_PANEL_COLOR;
-  ctx.fillRect(tx(0),ty(0.85),bx(1),by(0.20));
+  ctx.fillRect(tx(0),ty(0.85),bx(1),by(0.20));*/
 }
 
 function initbackground()
