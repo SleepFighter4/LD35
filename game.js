@@ -220,10 +220,10 @@ function collides(o1, o2) {
     { x: o1.x + o1cornerinfo.dist * Math.cos((  0 + o1cornerinfo.angle) * RADIANS_PER_DEG),
       y: o1.y + o1cornerinfo.dist * Math.sin((  0 + o1cornerinfo.angle) * RADIANS_PER_DEG) },
     { x: o1.x + o1cornerinfo.dist * Math.cos((180 - o1cornerinfo.angle) * RADIANS_PER_DEG),
-      y: o1.y - o1cornerinfo.dist * Math.sin((180 - o1cornerinfo.angle) * RADIANS_PER_DEG) },
-    { x: o1.x - o1cornerinfo.dist * Math.cos((180 + o1cornerinfo.angle) * RADIANS_PER_DEG),
-      y: o1.y - o1cornerinfo.dist * Math.sin((180 + o1cornerinfo.angle) * RADIANS_PER_DEG) },
-    { x: o1.x - o1cornerinfo.dist * Math.cos((360 - o1cornerinfo.angle) * RADIANS_PER_DEG),
+      y: o1.y + o1cornerinfo.dist * Math.sin((180 - o1cornerinfo.angle) * RADIANS_PER_DEG) },
+    { x: o1.x + o1cornerinfo.dist * Math.cos((180 + o1cornerinfo.angle) * RADIANS_PER_DEG),
+      y: o1.y + o1cornerinfo.dist * Math.sin((180 + o1cornerinfo.angle) * RADIANS_PER_DEG) },
+    { x: o1.x + o1cornerinfo.dist * Math.cos((360 - o1cornerinfo.angle) * RADIANS_PER_DEG),
       y: o1.y + o1cornerinfo.dist * Math.sin((360 - o1cornerinfo.angle) * RADIANS_PER_DEG) },
   ];
 
@@ -231,10 +231,10 @@ function collides(o1, o2) {
     { x: o2.x + o2cornerinfo.dist * Math.cos((  0 + o2cornerinfo.angle) * RADIANS_PER_DEG),
       y: o2.y + o2cornerinfo.dist * Math.sin((  0 + o2cornerinfo.angle) * RADIANS_PER_DEG) },
     { x: o2.x + o2cornerinfo.dist * Math.cos((180 - o2cornerinfo.angle) * RADIANS_PER_DEG),
-      y: o2.y - o2cornerinfo.dist * Math.sin((180 - o2cornerinfo.angle) * RADIANS_PER_DEG) },
-    { x: o2.x - o2cornerinfo.dist * Math.cos((180 + o2cornerinfo.angle) * RADIANS_PER_DEG),
-      y: o2.y - o2cornerinfo.dist * Math.sin((180 + o2cornerinfo.angle) * RADIANS_PER_DEG) },
-    { x: o2.x - o2cornerinfo.dist * Math.cos((360 - o2cornerinfo.angle) * RADIANS_PER_DEG),
+      y: o2.y + o2cornerinfo.dist * Math.sin((180 - o2cornerinfo.angle) * RADIANS_PER_DEG) },
+    { x: o2.x + o2cornerinfo.dist * Math.cos((180 + o2cornerinfo.angle) * RADIANS_PER_DEG),
+      y: o2.y + o2cornerinfo.dist * Math.sin((180 + o2cornerinfo.angle) * RADIANS_PER_DEG) },
+    { x: o2.x + o2cornerinfo.dist * Math.cos((360 - o2cornerinfo.angle) * RADIANS_PER_DEG),
       y: o2.y + o2cornerinfo.dist * Math.sin((360 - o2cornerinfo.angle) * RADIANS_PER_DEG) },
   ];
 
