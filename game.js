@@ -47,7 +47,7 @@ for (var i = 0; i < objects.length; i++) {
   ];
 
   // Rotate 
-  var a = (o.angle+90) * RADIANS_PER_DEG;
+  var a = (o.angle) 
   for (var j = 0; j < 4; j++) {
     var x = o.x + (oCorners[j][0] - o.x) * Math.cos(a) - (oCorners[j][1] - o.y) * Math.sin(a)
     var y = o.y + (oCorners[j][0] - o.x) * Math.sin(a) + (oCorners[j][1] - o.y) * Math.cos(a)
