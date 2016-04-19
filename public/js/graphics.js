@@ -28,7 +28,8 @@ function drawBuilding(ctx, x, y, width, height, angle, color)
   //ctx.save();
   //ctx.translate(x+width/2, y+height/2);
   //ctx.rotate((angle-90)*Math.PI/180);
-  if(color == 1){ctx.drawImage(building1, x-width/2, y-height/2, width, height);}
+  if(color == 0){ctx.strokeRect(x-width/2, y-height/2, width, height);}
+  else if(color == 1){ctx.drawImage(building1, x-width/2, y-height/2, width, height);}
   else if(color == 2){ctx.drawImage(building2, x-width/2, y-height/2, width, height);}
   else if(color == 3){ctx.drawImage(building3, x-width/2, y-height/2, width, height);}
   else {ctx.drawImage(building1, x-width/2, y-height/2, width, height);}
