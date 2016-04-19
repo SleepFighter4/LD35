@@ -11,6 +11,8 @@ var Player = require('./Player').Player;
 // Globals
 var loop;
 var players = [];
+var startObject = {angle:0, "x":200,"y":-100,"w":10,"h":200,"c":1};
+var endObject = {angle:0, "x":230,"y":-100,"w":10,"h":200,"c":1};
 var objects = [
   {angle:0, "x":915,"y":-85,"w":50,"h":50,"c":1},
   {angle:45, "x":540,"y":-1370,"w":100,"h":100,"c":2},
@@ -18,7 +20,9 @@ var objects = [
   {angle:0, "x":-1375,"y":-1550,"w":100,"h":50,"c":1},
   {angle:0, "x":-860,"y":-1000,"w":100,"h":100,"c":2},
   {angle:45, "x":80,"y":-1140,"w":50,"h":50,"c":3},
-  {angle:45,"x":20,"y":-1030,"w":50,"h":50,"c":3}
+  {angle:45,"x":20,"y":-1030,"w":50,"h":50,"c":3},
+  /*startObject,*/
+  endObject // must be last in array for now
 ];
 var objectsAsLines = []
 for (var i = 0; i < objects.length; i++) {
@@ -162,13 +166,7 @@ function logNumUsers() {
 }
 
 function chooseMode(socket, player) {
-  if (players.length == 2) {
-    io.sockets.emit('server message', "Entering multiplayer mode.");
-    roundStartTime = 0;
-  } else if (players.length == 1) {
-    io.sockets.emit('server message', "Entering single player mode.");
-    roundStarting = false;
-  } else if (players.length > 2) {
+  if (players.length > 1) {
     player.participating = false;
     socket.emit('round in progress', Date.now() - roundStartTime);
   }
@@ -245,7 +243,8 @@ function movePlayers() {
     p.x += p.vX * delta;
     p.y += p.vY * delta;
     p.collisionPoints = [];
-    var pLines = getPlayerLines(p);    
+    var pLines = getPlayerLines(p);  
+    checkEnd(p, pLines);
     if (checkMap(p, delta, pLines) || checkObjects(p, delta, pLines) || checkPlayers(p, delta, pLines)) {
     
       p.x = temp['p.x'];
@@ -292,7 +291,7 @@ function getPlayerLines(p) {
 function checkObjects(p, delta, pLines) {
   var coll = false;
   for (var i = 0; i < pLines.length; i++) {
-    for (var j = 0; j < objectsAsLines.length; j++) {
+    for (var j = 0; j < objectsAsLines.length-1; j++) {
       for (var k = 0; k < objectsAsLines[j].length; k++) {
         var intersection = mapUtils.lineIntersection(
           pLines[i][0][0],
@@ -308,7 +307,7 @@ function checkObjects(p, delta, pLines) {
         if (intersection.onLine1 && intersection.onLine2) {
           p.collisionPoints.push([intersection.x,intersection.y]);
           // Only keep the velocity in the direction of the line the player hit.
-          console.log('Object collision');
+          //console.log('Object collision');
           var magnitude = Math.sqrt(Math.pow(p.vX,2) + Math.pow(p.vY,2));
           //if (!col)
           coll= true;
@@ -321,32 +320,66 @@ function checkObjects(p, delta, pLines) {
   return coll;
 }
 
+function checkEnd(p, pLines) {
+  var coll = false;
+  for (var i = 0; i < pLines.length; i++) {
+    var endLines = objectsAsLines[objectsAsLines.length-1];
+    for (var k = 0; k < endLines.length; k++) {
+      var intersection = mapUtils.lineIntersection(
+        pLines[i][0][0],
+        pLines[i][0][1],
+        pLines[i][1][0],
+        pLines[i][1][1],
+        endLines[k][0][0],
+        endLines[k][0][1],
+        endLines[k][1][0],
+        endLines[k][1][1]
+      )
+
+      if (intersection.onLine1 && intersection.onLine2) {
+        p.collisionPoints.push([intersection.x,intersection.y]);
+        // Only keep the velocity in the direction of the line the player hit.
+        //console.log('End collision');
+        var magnitude = Math.sqrt(Math.pow(p.vX,2) + Math.pow(p.vY,2));
+        //if (!col)
+        coll= true;
+        p.checkPoint = 1;
+        //p.vX = magnitude * Math.cos(Math.atan2(objectsAsLines[j][k][0][1] - objectsAsLines[j][k][1][1], objectsAsLines[j][k][0][0] - objectsAsLines[j][k][1][0]));
+        //p.vY = magnitude * Math.sin(Math.atan2(objectsAsLines[j][k][0][1] - objectsAsLines[j][k][1][1], objectsAsLines[j][k][0][0] - objectsAsLines[j][k][1][0]));
+      }
+    }
+  }
+  return coll;
+}
+
 function checkPlayers(p, delta, pLines) {
   var coll = false;
   for (var i = 0; i < pLines.length; i++) {
     for (var j = 0; j < players.length; j++) {
-      var p2Lines = getPlayerLines(players[j]);
-      for (var k = 0; k < p2Lines.length; k++) {
-        var intersection = mapUtils.lineIntersection(
-          pLines[i][0][0],
-          pLines[i][0][1],
-          pLines[i][1][0],
-          pLines[i][1][1],
-          p2Lines[k][0][0],
-          p2Lines[k][0][1],
-          p2Lines[k][1][0],
-          p2Lines[k][1][1]
-        )
+      if (players[j].participating) {
+        var p2Lines = getPlayerLines(players[j]);
+        for (var k = 0; k < p2Lines.length; k++) {
+          var intersection = mapUtils.lineIntersection(
+            pLines[i][0][0],
+            pLines[i][0][1],
+            pLines[i][1][0],
+            pLines[i][1][1],
+            p2Lines[k][0][0],
+            p2Lines[k][0][1],
+            p2Lines[k][1][0],
+            p2Lines[k][1][1]
+          )
 
-        if (intersection.onLine1 && intersection.onLine2) {
-          p.collisionPoints.push([intersection.x,intersection.y]);
-          // Only keep the velocity in the direction of the line the player hit.
-          console.log('Player collision');
-          var magnitude = Math.sqrt(Math.pow(p.vX,2) + Math.pow(p.vY,2));
-          //if (!col)
-          coll= true;
-          //p.vX = magnitude * Math.cos(Math.atan2(p2Lines[j][k][0][1] - p2Lines[j][k][1][1], p2Lines[j][k][0][0] - p2Lines[j][k][1][0]));
-          //p.vY = magnitude * Math.sin(Math.atan2(p2Lines[j][k][0][1] - p2Lines[j][k][1][1], p2Lines[j][k][0][0] - p2Lines[j][k][1][0]));
+          if (intersection.onLine1 && intersection.onLine2) {
+            p.collisionPoints.push([intersection.x,intersection.y]);
+            // Only keep the velocity in the direction of the line the player hit.
+            //console.log('Player collision');
+            var magnitude = Math.sqrt(Math.pow(p.vX,2) + Math.pow(p.vY,2));
+            //if (!col)
+            coll= true;
+            //p.vX = magnitude * Math.cos(Math.atan2(p2Lines[j][k][0][1] - p2Lines[j][k][1][1], p2Lines[j][k][0][0] - p2Lines[j][k][1][0]));
+            //p.vY = magnitude * Math.sin(Math.atan2(p2Lines[j][k][0][1] - p2Lines[j][k][1][1], p2Lines[j][k][0][0] - p2Lines[j][k][1][0]));
+          }
         }
       }
     }
@@ -374,7 +407,7 @@ function checkMap(p, delta, pLines) {
         
         p.collisionPoints.push([intersection.x,intersection.y]);
         // Only keep the velocity in the direction of the line the player hit.
-        console.log('Map collision');
+        //console.log('Map collision');
         var magnitude = Math.sqrt(Math.pow(p.vX,2) + Math.pow(p.vY,2));
         coll = true;
         //p.vX = magnitude * Math.cos(Math.atan2(mapLines[j][0][1] - mapLines[j][1][1], mapLines[j][0][0] - mapLines[j][1][0]));
@@ -478,32 +511,36 @@ function project(corners, axis) {
 }
 
 function handleRounds() {
-  if (players.length <= 1) return;
-  if (((Date.now()-roundStartTime)/1000 > roundTimeLimit || lapTimes.Length == players.length) && !roundStarting) {
+  if (players.length == 0) return;
+  var participants = 0;
+  for (var i = 0; i < players.length; i++) {
+    if (players[i].participating) participants++;
+  }
+  if ((participants == 0 || (Date.now()-roundStartTime)/1000 > roundTimeLimit || lapTimes.Length == players.length) && !roundStarting) {
     // Round has hit time limit or all players have finished.
     prepareNewRound();
   }
   if (!roundStarting) {
     for (var i = 0; i < players.length; i++) {
       var p = players[i]
-      var playerFinished = 0;
-      if (playerFinished) {
-        lapTimes.push({
-          "name": p.name,
-          "time": (Date.now()-roundStartTime)/1000
-        });
-        io.sockets.emit('lap times', lapTimes);
+      if (p.participating) {
+        if (p.checkPoint) {
+          lapTimes.push({
+            "name": p.name,
+            "time": (Date.now()-roundStartTime)/1000
+          });
+          io.sockets.emit('lap times', lapTimes);
+          p.participating = false;
+        }
       }
-      // If player crosses finish line, add lap time to a "previous lap times" board.
-      // If last player finished round, spawn players again.
     }
   }
 }
 
 function prepareNewRound() {
   log("Round starting.");
-  var startCountdownTime = 1; 
-  setTimeout(startRound, startCountdownTime * 1000);
+  var startCountdownTime = 1;
+  setTimeout(startRound, startCountdownTime*3000)
   io.sockets.emit('round starting', startCountdownTime);
   roundStarting = true;
   for (var i = 0; i < players.length; i++) {
@@ -512,7 +549,12 @@ function prepareNewRound() {
     p.y = -100;
     p.w = 30;
     p.h = 90;
+    p.vX = 0;
+    p.vY = 0;
     p.angle = -90.0;
+    p.lastMovedTime = Date.now();
+    p.participating = true;
+    p.checkPoint = 0;
     // Stop them from moving.
   }
   for (var i = 0; i < players.length; i++) {
@@ -538,9 +580,12 @@ function startRound() {
     p.y = -100;
     p.w = 30;
     p.h = 90;
+    p.vX = 0;
+    p.vY = 0;
     p.angle = -90.0;
     p.lastMovedTime = Date.now();
     p.participating = true;
+    p.checkPoint = 0;
   }
   lapTimes = [];
   io.sockets.emit('lap times', lapTimes);

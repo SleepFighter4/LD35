@@ -3,8 +3,8 @@ function Player(id, name) {
   this.name = name;
   this.x = 100.0;
   this.y = -100.0;
-  this.w = 60;
-  this.h = 90;
+  p.w = 30;
+  p.h = 90;
   this.vX = 0.0;
   this.vY = 0.0;
   this.angle = -90.0;

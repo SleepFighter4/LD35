@@ -66,12 +66,13 @@ function registerSocketHooks() {
   socket.on('round starting', function(startCountdownTime) {
     // Display message "Round starting in 5", 4, ... 1!
     console.log("Round starting soon.");
-    roundStartTime = Date.now() - 5000;
+    roundStartTime = Date.now() + startCountdownTime
   });
   socket.on('round started', function(lengthOfRound) {
     roundTimeLimit = lengthOfRound;
     // Display message "GO!"
     console.log("Round started.");
+    roundStartTime = Date.now()
   });
   socket.on('round in progress', function(timeElapsed) {
     console.log("Round in progress. Auto-tracking another player.");
