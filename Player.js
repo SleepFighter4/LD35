@@ -8,7 +8,7 @@ function Player(id, name) {
   this.vX = 0.0;
   this.vY = 0.0;
   this.angle = -90.0;
-  this.rotationSpeed = 45.0;
+  this.rotationSpeed = 90.0;
   this.shiftFactor = 1.0;
   this.keyState = {};
   this.lastMovedTime = Date.now();
@@ -20,6 +20,8 @@ function Player(id, name) {
   this.ping = 0;
   this.pingStart = Date.now();
   this.checkPoint = 0;
-  this.participating = true;;
+  this.participating = true;
+  this.collisionPoints = [];
+  this.corners = [[0,0],[0,0],[0,0],[0,0]];
 }
 exports.Player = Player;

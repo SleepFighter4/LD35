@@ -20,6 +20,47 @@ var objects = [
   {angle:45, "x":80,"y":-1140,"w":50,"h":50,"c":3},
   {angle:45,"x":20,"y":-1030,"w":50,"h":50,"c":3}
 ];
+var objectsAsLines = []
+for (var i = 0; i < objects.length; i++) {
+  console.log(i)
+  var o = objects[i];
+  /*var oCorners = [
+    [o.x - o.w / 2, o.y - o.h / 2],
+    [o.x - o.w / 2, o.y + o.h / 2],
+    [o.x + o.w / 2, o.y + o.h / 2],
+    [o.x + o.w / 2, o.y - o.h / 2]
+  ];
+
+  // Rotate 
+  for (var j = 0; j < 4; j++) {
+    oCorners[j] = [
+      o.x + (oCorners[j][0] - o.x) * Math.cos(o.angle*RADIANS_PER_DEG) - (oCorners[j][1] - o.y) * Math.sin(o.angle*RADIANS_PER_DEG),
+      o.y + (oCorners[j][0] - o.x) * Math.sin(o.angle*RADIANS_PER_DEG) + (oCorners[j][1] - o.y) * Math.cos(o.angle*RADIANS_PER_DEG)
+    ];
+  }*/
+
+  var oCorners = [
+    [o.x - o.w / 2, o.y - o.h / 2],
+    [o.x - o.w / 2, o.y + o.h / 2],
+    [o.x + o.w / 2, o.y + o.h / 2],
+    [o.x + o.w / 2, o.y - o.h / 2]
+  ];
+
+  // Rotate 
+  var a = (o.angle+90) * RADIANS_PER_DEG;
+  for (var j = 0; j < 4; j++) {
+    var x = o.x + (oCorners[j][0] - o.x) * Math.cos(a) - (oCorners[j][1] - o.y) * Math.sin(a)
+    var y = o.y + (oCorners[j][0] - o.x) * Math.sin(a) + (oCorners[j][1] - o.y) * Math.cos(a)
+    oCorners[j] = [x,y];
+  }
+  
+  objectsAsLines.push([
+    [oCorners[0],oCorners[1]],
+    [oCorners[1],oCorners[2]],
+    [oCorners[2],oCorners[3]],
+    [oCorners[3],oCorners[0]]
+  ]);
+}
 
 var scores = [];
 var frameDelay = 40;
@@ -149,7 +190,7 @@ function movePlayers() {
     if (p.keyState[KEY_CODES.LEFT]) {
       rotationDirection = -rotationSpeed;
     } else if (p.keyState[KEY_CODES.RIGHT]) {
-      rotationDirection = rotationSpeed;
+      rotationDirection = +rotationSpeed;
     }
 
     if (p.keyState[KEY_CODES.UP]) {
@@ -169,12 +210,12 @@ function movePlayers() {
     p.h = Math.min(Math.max(p.h, 20), 130);
 
     // Collisions
-    for (var i in objects) {
+    /*for (var i in objects) {
       if (collides(objects[i], p)) {
         console.log("Player collision with:", objects[i]);
         // TODO: divert player
       }
-    }
+    }*/
 
     //Phil's terrible drift stuff
     var drift;
@@ -182,6 +223,14 @@ function movePlayers() {
     if(velocity < 200) drift = 1;
     else if(velocity > 400) drift = 0.2;
     else drift = 0.5;
+
+    var temp = {
+      "p.angle":p.angle,
+      "p.vX":p.vX,
+      "p.vY":p.vY,
+      "p.x":p.x,
+      "p.y":p.y
+    }
 
     p.angle = (p.angle + rotationDirection * p.rotationSpeed * delta) % 360;
     if (p.angle < 0) p.angle += 360;
@@ -195,11 +244,115 @@ function movePlayers() {
     if (Math.abs(p.vX) < 0.1) p.vX = 0;
     p.x += p.vX * delta;
     p.y += p.vY * delta;
+    p.collisionPoints = [];
+    var pLines = getPlayerLines(p);    
+    if (checkMap(p, delta, pLines) || checkObjects(p, delta, pLines)) {
+    
+      p.x = temp['p.x'];
+      p.y = temp['p.y'];
+      p.angle = temp['p.angle'];
+      p.vX = temp['p.vX'];
+      p.vY = temp['p.vY'];
+    }
+
     p.lastMovedTime = Date.now();
     p.xGrid = Math.floor(p.x / gridSize) + numNegXGrids;
     p.yGrid = Math.floor(p.y / gridSize) + numNegYGrids;
     playerIndexGrid[p.xGrid][p.yGrid].push(i);
   }
+}
+
+function getPlayerLines(p) {
+  console.log('pl')
+    var pCorners = [
+    [p.x - p.w / 2, p.y - p.h / 2],
+    [p.x - p.w / 2, p.y + p.h / 2],
+    [p.x + p.w / 2, p.y + p.h / 2],
+    [p.x + p.w / 2, p.y - p.h / 2]
+  ];
+
+  // Rotate 
+  var a = (p.angle+90) * RADIANS_PER_DEG;
+  for (var i = 0; i < 4; i++) {
+    var x = p.x + (pCorners[i][0] - p.x) * Math.cos(a) - (pCorners[i][1] - p.y) * Math.sin(a)
+    var y = p.y + (pCorners[i][0] - p.x) * Math.sin(a) + (pCorners[i][1] - p.y) * Math.cos(a)
+    pCorners[i] = [x,y];
+  }
+
+  p.corners = pCorners;
+
+  var pLines = [
+    [pCorners[0], pCorners[1]],
+    [pCorners[1], pCorners[2]],
+    [pCorners[2], pCorners[3]],
+    [pCorners[3], pCorners[0]]
+  ];
+  return pLines;
+}
+
+function checkObjects(p, delta, pLines) {
+  console.log('co')
+  var coll = false;
+  for (var i = 0; i < pLines.length; i++) {
+    for (var j = 0; j < objectsAsLines.length; j++) {
+      for (var k = 0; k < objectsAsLines[j].length; k++) {
+        var intersection = mapUtils.lineIntersection(
+          pLines[i][0][0],
+          pLines[i][0][1],
+          pLines[i][1][0],
+          pLines[i][1][1],
+          objectsAsLines[j][k][0][0],
+          objectsAsLines[j][k][0][1],
+          objectsAsLines[j][k][1][0],
+          objectsAsLines[j][k][1][1]
+        )
+
+        if (intersection.onLine1 && intersection.onLine2) {
+          p.collisionPoints.push([intersection.x,intersection.y]);
+          // Only keep the velocity in the direction of the line the player hit.
+          console.log('Object collision');
+          var magnitude = Math.sqrt(Math.pow(p.vX,2) + Math.pow(p.vY,2));
+          //if (!col)
+          coll= true;
+          //p.vX = magnitude * Math.cos(Math.atan2(objectsAsLines[j][k][0][1] - objectsAsLines[j][k][1][1], objectsAsLines[j][k][0][0] - objectsAsLines[j][k][1][0]));
+          //p.vY = magnitude * Math.sin(Math.atan2(objectsAsLines[j][k][0][1] - objectsAsLines[j][k][1][1], objectsAsLines[j][k][0][0] - objectsAsLines[j][k][1][0]));
+        }
+      }
+    }
+  }
+  return coll;
+}
+
+function checkMap(p, delta, pLines) {
+  console.log('cm')
+  var mapLines = mapUtils.mapLines;
+  var coll = false;
+  for (var i = 0; i < pLines.length; i++) {
+    for (var j = 0; j < mapLines.length; j++) {
+      var intersection = mapUtils.lineIntersection(
+        pLines[i][0][0],
+        pLines[i][0][1],
+        pLines[i][1][0],
+        pLines[i][1][1],
+        mapLines[j][0][0],
+        mapLines[j][0][1],
+        mapLines[j][1][0],
+        mapLines[j][1][1]
+      )
+
+      if (intersection.onLine1 && intersection.onLine2) {
+        
+        p.collisionPoints.push([intersection.x,intersection.y]);
+        // Only keep the velocity in the direction of the line the player hit.
+        console.log('Map collision');
+        var magnitude = Math.sqrt(Math.pow(p.vX,2) + Math.pow(p.vY,2));
+        coll = true;
+        //p.vX = magnitude * Math.cos(Math.atan2(mapLines[j][0][1] - mapLines[j][1][1], mapLines[j][0][0] - mapLines[j][1][0]));
+        //p.vY = magnitude * Math.sin(Math.atan2(mapLines[j][0][1] - mapLines[j][1][1], mapLines[j][0][0] - mapLines[j][1][0]));
+      }
+    }
+  }
+  return coll;
 }
 
 /*
@@ -319,8 +472,8 @@ function handleRounds() {
 
 function prepareNewRound() {
   log("Round starting.");
-  var startCountdownTime = 3; 
-  setTimeout(startRound, 3 * 1000);
+  var startCountdownTime = 1; 
+  setTimeout(startRound, startCountdownTime * 1000);
   io.sockets.emit('round starting', startCountdownTime);
   roundStarting = true;
   for (var i = 0; i < players.length; i++) {

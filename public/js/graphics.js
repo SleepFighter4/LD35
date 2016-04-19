@@ -28,10 +28,10 @@ function drawBuilding(ctx, x, y, width, height, angle, color)
   //ctx.save();
   //ctx.translate(x+width/2, y+height/2);
   //ctx.rotate((angle-90)*Math.PI/180);
-  if(color == 1){ctx.drawImage(building1, x, y, width, height);}
-  else if(color == 2){ctx.drawImage(building2, x, y, width, height);}
-  else if(color == 3){ctx.drawImage(building3, x, y, width, height);}
-  else {ctx.drawImage(building1, x, y, width, height);}
+  if(color == 1){ctx.drawImage(building1, x-width/2, y-height/2, width, height);}
+  else if(color == 2){ctx.drawImage(building2, x-width/2, y-height/2, width, height);}
+  else if(color == 3){ctx.drawImage(building3, x-width/2, y-height/2, width, height);}
+  else {ctx.drawImage(building1, x-width/2, y-height/2, width, height);}
   //ctx.restore();
   //BODY
   /*ctx.fillStyle = "#101010";
@@ -134,7 +134,7 @@ function drawObjects(objects, opponents, player, canvas, ctx)
             opponents[i].h,
             opponents[i].angle,
             opponents[i].c);
-      console.log(opponents[i].c);
+      //console.log(opponents[i].c);
       /*var playerText = "Players: " + opponents[i].x + " x " + opponents[i].y;
       ctx.fillText(playerText, 38, 200 + i*10);
       var playerText = "Players: " + coords.x + " x " + coords.y;
@@ -142,6 +142,7 @@ function drawObjects(objects, opponents, player, canvas, ctx)
     } 
   }
 
+  ctx.strokeStyle="#000000"
   ctx.lineWidth = 10;
   for(var side = 0; side < 2; side++)
   {
@@ -165,9 +166,40 @@ function drawObjects(objects, opponents, player, canvas, ctx)
       ctx.stroke();
     }
   }
-  ctx.restore();
+/*
+  ctx.strokeStyle="#000000"
+  ctx.strokeStyle="#ffffff"
+  var playerCorners = player.corners
 
-  centerText(canvas, ctx,"15");
+    ctx.strokeStyle="#FFFFFF"
+    var coords = getCarLocalCoords(player, canvas, playerCorners[0][0], playerCorners[0][1]);
+    ctx.rect(coords.x-1,coords.y-1,2,2);
+    ctx.stroke();
+
+    ctx.strokeStyle="#FF0000"
+    var coords = getCarLocalCoords(player, canvas, playerCorners[1][0], playerCorners[1][1]);
+    ctx.rect(coords.x-1,coords.y-1,2,2);
+    ctx.stroke();
+
+    ctx.strokeStyle="#00FF00"
+    var coords = getCarLocalCoords(player, canvas, playerCorners[2][0], playerCorners[2][1]);
+    ctx.rect(coords.x-1,coords.y-1,2,2);
+    ctx.stroke();
+
+    ctx.strokeStyle="#0000FF"
+    var coords = getCarLocalCoords(player, canvas, playerCorners[3][0], playerCorners[3][1]);
+    ctx.rect(coords.x-1,coords.y-1,2,2);
+    ctx.stroke();
+
+  for (i = 0; i < player.collisionPoints.length; i++) {
+    console.log(player.collisionPoints[i])
+    var coords = getCarLocalCoords(player, canvas, player.collisionPoints[i][0], player.collisionPoints[i][1]);
+    ctx.rect(coords.x-1, coords.y-1, 2, 2);
+    ctx.stroke();
+  }
+*/
+
+  ctx.restore();
 }
 
 function building(color, pos_x, pos_y, width, height)
