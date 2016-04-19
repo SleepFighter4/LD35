@@ -26,7 +26,6 @@ var objects = [
 ];
 var objectsAsLines = []
 for (var i = 0; i < objects.length; i++) {
-  console.log(i)
   var o = objects[i];
   /*var oCorners = [
     [o.x - o.w / 2, o.y - o.h / 2],
