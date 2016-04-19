@@ -251,8 +251,8 @@ function movePlayers() {
       p.x = temp['p.x'];
       p.y = temp['p.y'];
       p.angle = temp['p.angle'];
-      p.vX = temp['p.vX'];
-      p.vY = temp['p.vY'];
+      p.vX = 0
+      p.vY = 0
     }
 
     p.lastMovedTime = Date.now();
@@ -478,10 +478,10 @@ function prepareNewRound() {
   roundStarting = true;
   for (var i = 0; i < players.length; i++) {
     var p = players[i];
-    p.x = 30 + i * 30;
+    p.x = 30 + i * 40;
     p.y = -100;
-    p.w = 20;
-    p.h = 100;
+    p.w = 30;
+    p.h = 90;
     p.angle = -90.0;
     // Stop them from moving.
   }
@@ -504,10 +504,10 @@ function startRound() {
   roundStarting = false;
   for (var i = 0; i < players.length; i++) {
     var p = players[i];
-    p.x = 30 + i * 30;
+    p.x = 30 + i * 40;
     p.y = -100;
-    p.w = 20;
-    p.h = 100;
+    p.w = 30;
+    p.h = 90;
     p.angle = -90.0;
     p.lastMovedTime = Date.now();
     p.participating = true;
