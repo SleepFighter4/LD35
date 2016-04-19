@@ -21,7 +21,7 @@ var objects = [
   {angle:0, "x":-860,"y":-1000,"w":100,"h":100,"c":2},
   {angle:45, "x":80,"y":-1140,"w":50,"h":50,"c":3},
   {angle:45,"x":20,"y":-1030,"w":50,"h":50,"c":3},
-  /*startObject,*/
+  startObject,
   endObject // must be last in array for now
 ];
 var objectsAsLines = []
