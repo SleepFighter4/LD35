@@ -246,7 +246,7 @@ function movePlayers() {
     p.y += p.vY * delta;
     p.collisionPoints = [];
     var pLines = getPlayerLines(p);    
-    if (checkMap(p, delta, pLines) || checkObjects(p, delta, pLines)) {
+    if (checkMap(p, delta, pLines) || checkObjects(p, delta, pLines) || checkPlayers(p, delta, pLines)) {
     
       p.x = temp['p.x'];
       p.y = temp['p.y'];
@@ -263,8 +263,7 @@ function movePlayers() {
 }
 
 function getPlayerLines(p) {
-  console.log('pl')
-    var pCorners = [
+  var pCorners = [
     [p.x - p.w / 2, p.y - p.h / 2],
     [p.x - p.w / 2, p.y + p.h / 2],
     [p.x + p.w / 2, p.y + p.h / 2],
@@ -291,7 +290,6 @@ function getPlayerLines(p) {
 }
 
 function checkObjects(p, delta, pLines) {
-  console.log('co')
   var coll = false;
   for (var i = 0; i < pLines.length; i++) {
     for (var j = 0; j < objectsAsLines.length; j++) {
@@ -323,8 +321,40 @@ function checkObjects(p, delta, pLines) {
   return coll;
 }
 
+function checkPlayers(p, delta, pLines) {
+  var coll = false;
+  for (var i = 0; i < pLines.length; i++) {
+    for (var j = 0; j < players.length; j++) {
+      var p2Lines = getPlayerLines(players[j]);
+      for (var k = 0; k < p2Lines.length; k++) {
+        var intersection = mapUtils.lineIntersection(
+          pLines[i][0][0],
+          pLines[i][0][1],
+          pLines[i][1][0],
+          pLines[i][1][1],
+          p2Lines[k][0][0],
+          p2Lines[k][0][1],
+          p2Lines[k][1][0],
+          p2Lines[k][1][1]
+        )
+
+        if (intersection.onLine1 && intersection.onLine2) {
+          p.collisionPoints.push([intersection.x,intersection.y]);
+          // Only keep the velocity in the direction of the line the player hit.
+          console.log('Player collision');
+          var magnitude = Math.sqrt(Math.pow(p.vX,2) + Math.pow(p.vY,2));
+          //if (!col)
+          coll= true;
+          //p.vX = magnitude * Math.cos(Math.atan2(p2Lines[j][k][0][1] - p2Lines[j][k][1][1], p2Lines[j][k][0][0] - p2Lines[j][k][1][0]));
+          //p.vY = magnitude * Math.sin(Math.atan2(p2Lines[j][k][0][1] - p2Lines[j][k][1][1], p2Lines[j][k][0][0] - p2Lines[j][k][1][0]));
+        }
+      }
+    }
+  }
+  return coll;
+}
+
 function checkMap(p, delta, pLines) {
-  console.log('cm')
   var mapLines = mapUtils.mapLines;
   var coll = false;
   for (var i = 0; i < pLines.length; i++) {
