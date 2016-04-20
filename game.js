@@ -251,8 +251,8 @@ function movePlayers() {
       p.x = temp['p.x'];
       p.y = temp['p.y'];
       p.angle = temp['p.angle'];
-      p.vX = 0
-      p.vY = 0
+      p.vX =  -p.vX/2;
+      p.vY = -p.vY/2;
     }
 
     p.lastMovedTime = Date.now();
